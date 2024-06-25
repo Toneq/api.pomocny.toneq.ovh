@@ -5,27 +5,27 @@ namespace App\Http\Controllers;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Foundation\Validation\ValidatesRequests;
 use Illuminate\Routing\Controller as BaseController;
-use App\Services\NotificationService;
+use App\Services\EventService;
 
 class Controller extends BaseController
 {
     use AuthorizesRequests, ValidatesRequests;
 
-    protected $notificationService;
+    protected $eventService;
 
-    public function __construct(NotificationService $notificationService,){
-        $this->notificationService = $notificationService;
+    public function __construct(EventService $eventService,){
+        $this->eventService = $eventService;
     }
 
     public function sendNotification(Request $request){
-        return $this->notificationService->sendNotification();
+        return $this->eventService->message("x");
     }
 
     public function sendWinkNotification(Request $request){
-        return $this->notificationService->sendWinkNotification();
+        return $this->eventService->follow("x");
     }
 
     public function sendMessageNotification(Request $request){
-        return $this->notificationService->sendMessageNotification();
+        return $this->eventService->raid("x");
     }
 }

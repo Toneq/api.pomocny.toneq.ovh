@@ -5,17 +5,17 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Services\AuthService;
-use App\Services\NotificationService;
+use App\Services\EventService;
 
 class AuthController extends Controller
 {
     protected $authService;
-    protected $notificationService;
+    protected $eventService;
 
-    public function __construct(AuthService $authService, NotificationService $notificationService,){
+    public function __construct(AuthService $authService, EventService $eventService,){
         $this->middleware('auth:api', ['except' => ['login', 'register']]);
         $this->authService = $authService;
-        $this->notificationService = $notificationService;
+        $this->eventService = $eventService;
     }
 
     public function login(Request $request){
@@ -39,6 +39,6 @@ class AuthController extends Controller
     }
 
     public function test(){
-        return $this->notificationService->sendNotification();
+        return $this->eventService->message("x");
     }
 }
