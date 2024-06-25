@@ -5,33 +5,44 @@ namespace App\Services;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redis;
 
-class NotificationService
+class EventService
 {
-    public function sendNotification($user){   
-        $data = [
-            'event' => 'notification',
-            'data' => [
-                
-            ],
-        ];
-        
-        Redis::publish(`user:{$user->id}:event`, json_encode($data));
-    }
-
-    public function sendWinkNotification($user){   
-        $data = [
-            'event' => 'wink',
-            'data' => [
-                
-            ],
-        ];
-        
-        Redis::publish(`user:{$user->id}:event`, json_encode($data));
-    }
-
-    public function sendMessageNotification($user){   
+    public function message($user){   
         $data = [
             'event' => 'message',
+            'data' => [
+                
+            ],
+        ];
+        
+        Redis::publish(`user:{$user->id}:event`, json_encode($data));
+    }
+
+    public function follow($user){   
+        $data = [
+            'event' => 'follow',
+            'data' => [
+                
+            ],
+        ];
+        
+        Redis::publish(`user:{$user->id}:event`, json_encode($data));
+    }
+
+    public function raid($user){   
+        $data = [
+            'event' => 'raid',
+            'data' => [
+                
+            ],
+        ];
+        
+        Redis::publish(`user:{$user->id}:event`, json_encode($data));
+    }
+
+    public function subscription($user){   
+        $data = [
+            'event' => 'subscription',
             'data' => [
                 
             ],

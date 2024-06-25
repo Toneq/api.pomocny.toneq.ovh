@@ -7,12 +7,12 @@ use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Redis;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 
-class UserEventSubscriptionController extends Controller
+class EventController extends Controller
 {
-    public function subscribe(Request $request, $prefix)
+    public function subscribe($user)
     {
-        $response = new StreamedResponse(function () use ($prefix) {
-            Redis::psubscribe(["user:{$prefix}:event"], function ($message) {
+        $response = new StreamedResponse(function () use ($user) {
+            Redis::psubscribe(["user:{$user}:event"], function ($message) {
                 echo "data: $message\n\n";
                 ob_flush();
                 flush();
