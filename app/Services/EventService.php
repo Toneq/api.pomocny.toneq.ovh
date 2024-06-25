@@ -8,46 +8,92 @@ use Illuminate\Support\Facades\Redis;
 class EventService
 {
     public function message($user){   
-        $data = [
-            'event' => 'message',
-            'data' => [
-                
-            ],
-        ];
-        
-        Redis::publish(`user:{$user->id}:event`, json_encode($data));
+        try {
+            $data = [
+                'event' => 'message',
+                'data' => [],
+            ];
+    
+            Redis::publish(`user:{$user->id}:event`, json_encode($data));
+            return response()->json(['success' => true]);
+    
+        } catch (ConnectionException $e) {
+            return response()->json(['error' => 'Redis connection error: ' . $e->getMessage()], 500);
+    
+        } catch (\Exception $e) {
+            return response()->json(['error' => 'An error occurred: ' . $e->getMessage()], 500);
+        }
     }
 
     public function follow($user){   
-        $data = [
-            'event' => 'follow',
-            'data' => [
-                
-            ],
-        ];
-        
-        Redis::publish(`user:{$user->id}:event`, json_encode($data));
+        try {
+            $data = [
+                'event' => 'follow',
+                'data' => [],
+            ];
+    
+            Redis::publish(`user:{$user->id}:event`, json_encode($data));
+            return response()->json(['success' => true]);
+    
+        } catch (ConnectionException $e) {
+            return response()->json(['error' => 'Redis connection error: ' . $e->getMessage()], 500);
+    
+        } catch (\Exception $e) {
+            return response()->json(['error' => 'An error occurred: ' . $e->getMessage()], 500);
+        }
     }
 
     public function raid($user){   
-        $data = [
-            'event' => 'raid',
-            'data' => [
-                
-            ],
-        ];
-        
-        Redis::publish(`user:{$user->id}:event`, json_encode($data));
+        try {
+            $data = [
+                'event' => 'raid',
+                'data' => [],
+            ];
+    
+            Redis::publish(`user:{$user->id}:event`, json_encode($data));
+            return response()->json(['success' => true]);
+    
+        } catch (ConnectionException $e) {
+            return response()->json(['error' => 'Redis connection error: ' . $e->getMessage()], 500);
+    
+        } catch (\Exception $e) {
+            return response()->json(['error' => 'An error occurred: ' . $e->getMessage()], 500);
+        }
     }
 
     public function subscription($user){   
-        $data = [
-            'event' => 'subscription',
-            'data' => [
-                
-            ],
-        ];
-        
-        Redis::publish(`user:{$user->id}:event`, json_encode($data));
+        try {
+            $data = [
+                'event' => 'subscription',
+                'data' => [],
+            ];
+    
+            Redis::publish(`user:{$user->id}:event`, json_encode($data));
+            return response()->json(['success' => true]);
+    
+        } catch (ConnectionException $e) {
+            return response()->json(['error' => 'Redis connection error: ' . $e->getMessage()], 500);
+    
+        } catch (\Exception $e) {
+            return response()->json(['error' => 'An error occurred: ' . $e->getMessage()], 500);
+        }
+    }
+
+    public function test(){   
+        try {
+            $data = [
+                'event' => 'message',
+                'data' => [],
+            ];
+    
+            Redis::publish('user:test:event', json_encode($data));
+            return response()->json(['success' => true]);
+    
+        } catch (ConnectionException $e) {
+            return response()->json(['error' => 'Redis connection error: ' . $e->getMessage()], 500);
+    
+        } catch (\Exception $e) {
+            return response()->json(['error' => 'An error occurred: ' . $e->getMessage()], 500);
+        }
     }
 }

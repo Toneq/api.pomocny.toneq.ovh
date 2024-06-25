@@ -29,4 +29,14 @@ class Controller extends BaseController
     public function sendMessageNotification(Request $request){
         return $this->eventService->raid("x");
     }
+
+    public function xd(){
+
+        try {
+            Redis::ping();
+            return "Połączenie z Redis jest aktywne.";
+        } catch (Exception $e) {
+            return "Błąd połączenia z Redis: " . $e->getMessage();
+        }
+    }
 }
