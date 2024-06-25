@@ -29,4 +29,8 @@ class Controller extends BaseController
     public function sendMessageNotification(Request $request){
         return $this->eventService->raid("x");
     }
+
+    public function test(Request $request){
+        return $this->eventService->test();
+    }
 }

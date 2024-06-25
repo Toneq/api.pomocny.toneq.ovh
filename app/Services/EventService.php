@@ -50,4 +50,15 @@ class EventService
         
         Redis::publish(`user:{$user->id}:event`, json_encode($data));
     }
+
+    public function test(){   
+        $data = [
+            'event' => 'message',
+            'data' => [
+                
+            ],
+        ];
+        
+        Redis::publish(`user:test:event`, json_encode($data));
+    }
 }

@@ -18,6 +18,6 @@ Route::group([
 });
 Route::post('/test-notification', [Controller::class, 'test_notification']);
 Route::post('/test-wink', [Controller::class, 'test_wink']);
-Route::post('/test-message', [Controller::class, 'sendNotification']);
+Route::post('/test-message', [Controller::class, 'test']);
 Route::get('/subscribe/{user}/event', [EventController::class, 'subscribe']);
 Route::get('/search/{search}', [SearchController::class, 'search'])->where('search', '.*');
