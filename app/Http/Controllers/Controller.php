@@ -18,19 +18,7 @@ class Controller extends BaseController
         $this->eventService = $eventService;
     }
 
-    public function sendNotification(Request $request){
-        return $this->eventService->message("x");
-    }
-
-    public function sendWinkNotification(Request $request){
-        return $this->eventService->follow("x");
-    }
-
-    public function sendMessageNotification(Request $request){
-        return $this->eventService->raid("x");
-    }
-
-    public function test(Request $request){
+    public function test(){
         return $this->eventService->test();
-    }
+    }    
 }
