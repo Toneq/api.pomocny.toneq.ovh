@@ -5,17 +5,15 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Services\AuthService;
-use App\Services\EventService;
 
 class AuthController extends Controller
 {
     protected $authService;
     protected $eventService;
 
-    public function __construct(AuthService $authService, EventService $eventService,){
+    public function __construct(AuthService $authService){
         $this->middleware('auth:api', ['except' => ['login', 'register']]);
         $this->authService = $authService;
-        $this->eventService = $eventService;
     }
 
     public function login(Request $request){
@@ -36,9 +34,5 @@ class AuthController extends Controller
 
     public function user_profile(Request $request){
         return $this->authService->userProfile($request);
-    }
-
-    public function test(){
-        return $this->eventService->message("x");
     }
 }
