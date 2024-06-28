@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Events\MessageEvent;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redis;
 
@@ -79,27 +80,38 @@ class EventService
         }
     }
 
-    public function test(){   
-        try {
-            $data = [
-                'event' => 'message',
-                'data' => [
-                    'user' => 'test',
-                    'badges' => ['1', '2', '3'],
-                    'service' => 'twitch',
-                    'content' => 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam fermentum lacinia pharetra. Donec varius dui enim, eu imperdiet odio tincidunt ut. Duis varius, lorem in pretium consequat, nisl sapien pharetra urna, a ornare tortor tortor a felis. In consequat arcu purus, quis molestie leo dictum eget. Cras sed turpis vel dolor lobortis vulputate. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Phasellus molestie, nulla non dictum convallis, tortor leo egestas nibh, eu dictum ligula mi ut ex. Mauris eu venenatis nisl. Quisque suscipit rhoncus congue. Cras vitae erat viverra, ultricies dui eget, vulputate tellus. Phasellus.',
-                    'message_id' => 'XXXXX-xxxx-xxxx-xxxxx'
-                ],
-            ];
+    public function test(){  
+        $data = [
+            'data' => [
+                'user' => 'test',
+                'badges' => ['1', '2', '3'],
+                'service' => 'twitch',
+                'content' => 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam fermentum lacinia pharetra. Donec varius dui enim, eu imperdiet odio tincidunt ut. Duis varius, lorem in pretium consequat, nisl sapien pharetra urna, a ornare tortor tortor a felis. In consequat arcu purus, quis molestie leo dictum eget. Cras sed turpis vel dolor lobortis vulputate. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Phasellus molestie, nulla non dictum convallis, tortor leo egestas nibh, eu dictum ligula mi ut ex. Mauris eu venenatis nisl. Quisque suscipit rhoncus congue. Cras vitae erat viverra, ultricies dui eget, vulputate tellus. Phasellus.',
+                'message_id' => 'XXXXX-xxxx-xxxx-xxxxx'
+            ],
+        ];
+        event(new MessageEvent("test", $data));
+        return response()->json(['success' => true]);
+        // try {
+        //     $data = [
+        //         'event' => 'message',
+        //         'data' => [
+        //             'user' => 'test',
+        //             'badges' => ['1', '2', '3'],
+        //             'service' => 'twitch',
+        //             'content' => 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam fermentum lacinia pharetra. Donec varius dui enim, eu imperdiet odio tincidunt ut. Duis varius, lorem in pretium consequat, nisl sapien pharetra urna, a ornare tortor tortor a felis. In consequat arcu purus, quis molestie leo dictum eget. Cras sed turpis vel dolor lobortis vulputate. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Phasellus molestie, nulla non dictum convallis, tortor leo egestas nibh, eu dictum ligula mi ut ex. Mauris eu venenatis nisl. Quisque suscipit rhoncus congue. Cras vitae erat viverra, ultricies dui eget, vulputate tellus. Phasellus.',
+        //             'message_id' => 'XXXXX-xxxx-xxxx-xxxxx'
+        //         ],
+        //     ];
     
-            Redis::publish('user:test:event', json_encode($data));
-            return response()->json(['success' => true]);
+        //     Redis::publish('user:test:event', json_encode($data));
+        //     return response()->json(['success' => true]);
     
-        } catch (ConnectionException $e) {
-            return response()->json(['error' => 'Redis connection error: ' . $e->getMessage()], 500);
+        // } catch (ConnectionException $e) {
+        //     return response()->json(['error' => 'Redis connection error: ' . $e->getMessage()], 500);
     
-        } catch (\Exception $e) {
-            return response()->json(['error' => 'An error occurred: ' . $e->getMessage()], 500);
-        }
+        // } catch (\Exception $e) {
+        //     return response()->json(['error' => 'An error occurred: ' . $e->getMessage()], 500);
+        // }
     }
 }
