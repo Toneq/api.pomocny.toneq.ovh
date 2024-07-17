@@ -16,6 +16,8 @@ Route::group([
     Route::post('/refresh', [AuthController::class, 'refresh']);
     Route::get('/user-profile', [AuthController::class, 'user_profile']);    
 });
-Route::post('/test-message', [Controller::class, 'test']);
-Route::get('/subscribe/{user}/event', [EventController::class, 'subscribe']);
-Route::get('/search/{search}', [SearchController::class, 'search'])->where('search', '.*');
+
+Route::post('/test-message', [EventController::class, 'test_message']);
+Route::post('/test-follow', [EventController::class, 'test_follow']);
+// Route::get('/subscribe/{user}/event', [EventController::class, 'subscribe']);
+// Route::get('/search/{search}', [SearchController::class, 'search'])->where('search', '.*');

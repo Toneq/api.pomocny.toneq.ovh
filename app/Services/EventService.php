@@ -14,7 +14,7 @@ class EventService
                 'data' => [],
             ];
     
-            Redis::publish(`user:{$user->id}:chat`, json_encode($data));
+            Redis::publish(`user:{$user->id}:event`, json_encode($data));
             return response()->json(['success' => true]);
     
         } catch (ConnectionException $e) {
@@ -79,12 +79,12 @@ class EventService
         }
     }
 
-    public function test(){  
+    public function test_message(){  
         try {
             $data = [
                 'event' => 'message',
                 'data' => [
-                    'user' => 'Gal Anonim',
+                    'user' => 'test',
                     'badges' => ['1', '2', '3'],
                     'service' => 'twitch',
                     'content' => 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam fermentum lacinia pharetra. Donec varius dui enim, eu imperdiet odio tincidunt ut. Duis varius, lorem in pretium consequat, nisl sapien pharetra urna, a ornare tortor tortor a felis. In consequat arcu purus, quis molestie leo dictum eget. Cras sed turpis vel dolor lobortis vulputate. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Phasellus molestie, nulla non dictum convallis, tortor leo egestas nibh, eu dictum ligula mi ut ex. Mauris eu venenatis nisl. Quisque suscipit rhoncus congue. Cras vitae erat viverra, ultricies dui eget, vulputate tellus. Phasellus.',
@@ -93,6 +93,27 @@ class EventService
             ];
     
             Redis::publish('user:test:chat', json_encode($data));
+            return response()->json(['success' => true]);
+    
+        } catch (ConnectionException $e) {
+            return response()->json(['error' => 'Redis connection error: ' . $e->getMessage()], 500);
+    
+        } catch (\Exception $e) {
+            return response()->json(['error' => 'An error occurred: ' . $e->getMessage()], 500);
+        }
+    }
+
+    public function test_follow(){   
+        try {
+            $data = [
+                'event' => 'follow',
+                'data' => [
+                    'user' => 'test',
+                    'service' => 'twitch'
+                ],
+            ];
+    
+            Redis::publish('user:test:event', json_encode($data));
             return response()->json(['success' => true]);
     
         } catch (ConnectionException $e) {
