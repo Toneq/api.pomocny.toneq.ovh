@@ -7,10 +7,12 @@
     "require": {
         "php": "^8.1",
         "guzzlehttp/guzzle": "^7.2",
+        "kelvinzer0/curl-impersonate-php": "^3.2",
         "laravel/framework": "^10.10",
         "laravel/sanctum": "^3.3",
         "laravel/tinker": "^2.8",
         "predis/predis": "^2.2",
+        "spomky-labs/otphp": "^11.3",
         "symfony/http-foundation": "^6.4",
         "tymon/jwt-auth": "^2.0"
     },
