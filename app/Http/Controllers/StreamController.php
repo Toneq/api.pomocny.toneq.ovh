@@ -150,4 +150,12 @@ class StreamController extends Controller
     public function getOTP(){
         return $this->kickService->getOTP();
     }
+
+    public function createKickToken(){
+        return $this->kickService->createAccessToken();
+    }
+
+    public function createTwitchToken(){
+        return $this->twitchService->createAccessToken();
+    }
 }

@@ -8,6 +8,7 @@ use App\Models\AccessToken;
 use App\Services\NotificationService;
 use Illuminate\Support\Facades\Artisan; 
 // use Illuminate\Support\Facades\Redis;
+use CurlImpersonate\CurlImpersonate;
 
 class KickService
 {
@@ -31,19 +32,19 @@ class KickService
             'parameter' => $title
         ];
         
-        $curl = new CurlImpersonate\CurlImpersonate();
+        $curl = new CurlImpersonate();
         $curl->setopt(CURLCMDOPT_URL, 'https://kick.com/api/v2/channels/toneq/chat-commands');
         $curl->setopt(CURLCMDOPT_METHOD, 'POST');
         $curl->setopt(CURLCMDOPT_HTTP_HEADERS, ['Authorization' => 'Bearer ' . $this->accessToken]);
         $curl->setopt(CURLCMDOPT_POSTFIELDS, http_build_query($postData));
-        $curl->setopt(CURLCMDOPT_ENGINE, './curl/curl_chrome116');
+        $curl->setopt(CURLCMDOPT_ENGINE, '/var/www/api.pomocny.toneq.ovh/curl/curl_chrome116');
         
         $response = $curl->execStandard();
         $curl->closeStream();
 
         // $this->notificationService->sendNotification('kick:set-title', ["title" => $title]);
 
-        return $response->json();
+        return $response;
     }
 
     public function setCategory($game)
@@ -53,19 +54,19 @@ class KickService
             'parameter' => $game
         ];
         
-        $curl = new CurlImpersonate\CurlImpersonate();
+        $curl = new CurlImpersonate();
         $curl->setopt(CURLCMDOPT_URL, 'https://kick.com/api/v2/channels/toneq/chat-commands');
         $curl->setopt(CURLCMDOPT_METHOD, 'POST');
         $curl->setopt(CURLCMDOPT_HTTP_HEADERS, ['Authorization' => 'Bearer ' . $this->accessToken]);
         $curl->setopt(CURLCMDOPT_POSTFIELDS, http_build_query($postData));
-        $curl->setopt(CURLCMDOPT_ENGINE, './curl/curl_chrome116');
+        $curl->setopt(CURLCMDOPT_ENGINE, '/var/www/api.pomocny.toneq.ovh/curl/curl_chrome116');
         
         $response = $curl->execStandard();
         $curl->closeStream();
 
         // $this->notificationService->sendNotification('kick:set-category', ["category" => $game]);
 
-        return $response->json();
+        return $response;
     }
 
     public function permBan($user)
@@ -75,19 +76,19 @@ class KickService
             'permanent' => true
         ];
         
-        $curl = new CurlImpersonate\CurlImpersonate();
+        $curl = new CurlImpersonate();
         $curl->setopt(CURLCMDOPT_URL, 'https://kick.com/api/v2/channels/toneq/bans');
         $curl->setopt(CURLCMDOPT_METHOD, 'POST');
         $curl->setopt(CURLCMDOPT_HTTP_HEADERS, ['Authorization' => 'Bearer ' . $this->accessToken]);
         $curl->setopt(CURLCMDOPT_POSTFIELDS, http_build_query($postData));
-        $curl->setopt(CURLCMDOPT_ENGINE, './curl/curl_chrome116');
+        $curl->setopt(CURLCMDOPT_ENGINE, '/var/www/api.pomocny.toneq.ovh/curl/curl_chrome116');
         
         $response = $curl->execStandard();
         $curl->closeStream();
 
         // $this->notificationService->sendNotification('kick:permban', ["user" => $user]);
 
-        return $response->json();
+        return $response;
     }
 
     public function tempBan($user, $duration)
@@ -98,51 +99,51 @@ class KickService
             'duration' => $duration
         ];
         
-        $curl = new CurlImpersonate\CurlImpersonate();
+        $curl = new CurlImpersonate();
         $curl->setopt(CURLCMDOPT_URL, 'https://kick.com/api/v2/channels/toneq/bans');
         $curl->setopt(CURLCMDOPT_METHOD, 'POST');
         $curl->setopt(CURLCMDOPT_HTTP_HEADERS, ['Authorization' => 'Bearer ' . $this->accessToken]);
         $curl->setopt(CURLCMDOPT_POSTFIELDS, http_build_query($postData));
-        $curl->setopt(CURLCMDOPT_ENGINE, './curl/curl_chrome116');
+        $curl->setopt(CURLCMDOPT_ENGINE, '/var/www/api.pomocny.toneq.ovh/curl/curl_chrome116');
         
         $response = $curl->execStandard();
         $curl->closeStream();
 
         // $this->notificationService->sendNotification('kick:tempban', ["user" => $user, "duration" => $duration]);
 
-        return $response->json();
+        return $response;
     }
 
     public function unban($user)
     {
-        $curl = new CurlImpersonate\CurlImpersonate();
+        $curl = new CurlImpersonate();
         $curl->setopt(CURLCMDOPT_URL, 'https://kick.com/api/v2/channels/toneq/bans/' . $user);
         $curl->setopt(CURLCMDOPT_METHOD, 'DELETE');
         $curl->setopt(CURLCMDOPT_HTTP_HEADERS, ['Authorization' => 'Bearer ' . $this->accessToken]);
-        $curl->setopt(CURLCMDOPT_ENGINE, './curl/curl_chrome116');
+        $curl->setopt(CURLCMDOPT_ENGINE, '/var/www/api.pomocny.toneq.ovh/curl/curl_chrome116');
         
         $response = $curl->execStandard();
         $curl->closeStream();
 
         // $this->notificationService->sendNotification('kick:unban', ["user" => $user]);
 
-        return $response->json();
+        return $response;
     }
 
     public function deleteMessage($messageId)
     {      
-        $curl = new CurlImpersonate\CurlImpersonate();
+        $curl = new CurlImpersonate();
         $curl->setopt(CURLCMDOPT_URL, 'https://kick.com/api/v2/chatrooms/196508/messages/' . $messageId);
         $curl->setopt(CURLCMDOPT_METHOD, 'DELETE');
         $curl->setopt(CURLCMDOPT_HTTP_HEADERS, ['Authorization' => 'Bearer ' . $this->accessToken]);
-        $curl->setopt(CURLCMDOPT_ENGINE, './curl/curl_chrome116');
+        $curl->setopt(CURLCMDOPT_ENGINE, '/var/www/api.pomocny.toneq.ovh/curl/curl_chrome116');
         
         $response = $curl->execStandard();
         $curl->closeStream();
 
         // $this->notificationService->sendNotification('kick:delete-message', ["messageId" => $messageId]);
 
-        return $response->json();
+        return $response;
     }
 
     public function sendMessage($message)
@@ -152,27 +153,27 @@ class KickService
             'content' => $message
         ];
         
-        $curl = new CurlImpersonate\CurlImpersonate();
+        $curl = new CurlImpersonate();
         $curl->setopt(CURLCMDOPT_URL, 'https://kick.com/api/v2/messages/send/196508');
         $curl->setopt(CURLCMDOPT_METHOD, 'POST');
         $curl->setopt(CURLCMDOPT_HTTP_HEADERS, ['Authorization' => 'Bearer ' . $this->accessToken]);
         $curl->setopt(CURLCMDOPT_POSTFIELDS, http_build_query($postData));
-        $curl->setopt(CURLCMDOPT_ENGINE, './curl/curl_chrome116');
+        $curl->setopt(CURLCMDOPT_ENGINE, '/var/www/api.pomocny.toneq.ovh/curl/curl_chrome116');
         
         $response = $curl->execStandard();
         $curl->closeStream();
 
         // $this->notificationService->sendNotification('kick:send-message', ["message" => $message]);
 
-        return $response->json();
+        return $response;
     }
 
     public function createAccessToken()
     {
-        $curl = new CurlImpersonate\CurlImpersonate();
+        $curl = new CurlImpersonate();
         $curl->setopt(CURLCMDOPT_URL, 'https://kick.com/kick-token-provider');
         $curl->setopt(CURLCMDOPT_METHOD, 'GET');
-        $curl->setopt(CURLCMDOPT_ENGINE, './curl/curl_chrome116');
+        $curl->setopt(CURLCMDOPT_ENGINE, '/var/www/api.pomocny.toneq.ovh/curl/curl_chrome116');
         
         $response = $curl->execStandard();
         $curl->closeStream();
@@ -192,11 +193,11 @@ class KickService
             'one_time_password' => $code
         ];
         
-        $curl = new CurlImpersonate\CurlImpersonate();
+        $curl = new CurlImpersonate();
         $curl->setopt(CURLCMDOPT_URL, 'https://kick.com/mobile/login');
         $curl->setopt(CURLCMDOPT_METHOD, 'POST');
         $curl->setopt(CURLCMDOPT_POSTFIELDS, http_build_query($postData));
-        $curl->setopt(CURLCMDOPT_ENGINE, './curl/curl_chrome116');
+        $curl->setopt(CURLCMDOPT_ENGINE, '/var/www/api.pomocny.toneq.ovh/curl/curl_chrome116');
         
         $response = $curl->execStandard();
         $curl->closeStream();

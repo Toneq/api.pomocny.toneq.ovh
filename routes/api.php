@@ -6,6 +6,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\EventController;
 use App\Http\Controllers\SearchController;
+use App\Http\Controllers\StreamController;
 
 Route::group([
     'middleware' => 'api'
@@ -19,5 +20,7 @@ Route::group([
 
 Route::post('/test-message', [EventController::class, 'test_message']);
 Route::post('/test-follow', [EventController::class, 'test_follow']);
+Route::post('/message-test', [StreamController::class, 'sendMessage']);
+Route::post('/kat', [StreamController::class, 'createKickToken']);
 // Route::get('/subscribe/{user}/event', [EventController::class, 'subscribe']);
 // Route::get('/search/{search}', [SearchController::class, 'search'])->where('search', '.*');
