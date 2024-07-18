@@ -154,8 +154,4 @@ class StreamController extends Controller
     public function createKickToken(){
         return $this->kickService->createAccessToken();
     }
-
-    public function createTwitchToken(){
-        return $this->twitchService->createAccessToken();
-    }
 }
