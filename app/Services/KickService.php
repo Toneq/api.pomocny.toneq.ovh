@@ -102,6 +102,24 @@ class KickService
         return $output;
     }
 
+    public function clearChat()
+    {
+        $command = [
+            '/var/www/api.pomocny.toneq.ovh/curl/curl_chrome116',
+            '-H', 'Authorization: Bearer ' . $this->accessToken,
+            '-H', 'Content-Type: application/json',
+            '-X', 'POST',
+            '-d', 'command=clear',
+            'https://kick.com/api/v2/channels/toneq/chat-commands'
+        ];
+        
+        $result = Process::run($command);
+        
+        $output = $result->output();
+
+        return $output;
+    }
+
     public function permBan($user)
     {
         // $headers = [

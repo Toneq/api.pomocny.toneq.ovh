@@ -79,6 +79,26 @@ class StreamController extends Controller
         }
     }
 
+    public function clearChat(Request $request){
+        $headers = $request->headers->all();        
+
+        if($request->input("service")=="kick"){
+            $responseKick = $this->kickService->clearChat();
+            return ["kick" => $responseKick];
+        }
+
+        if($request->input("service")=="twitch"){
+            $responseTwitch = $this->twitchService->clearChat();
+            return ["twitch" => $responseTwitch];
+        }
+
+        if($request->input("service")=="both"){
+            $responseKick = $this->kickService->clearChat();
+            $responseTwitch = $this->twitchService->clearChat();           
+            return ["kick" => $responseKick, "twitch" => $responseTwitch];
+        }
+    }
+
     public function tempBan(Request $request){
         $user = $request->input("user");
         $duration = $request->input("duration");

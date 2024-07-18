@@ -50,6 +50,20 @@ class TwitchService
         return $response->json();
     }
 
+    public function clearChat()
+    {
+        $response = Http::withHeaders([
+            'Authorization' => 'Bearer ' . $this->accessTokenBot,
+            'Client-Id' => $this->clientId,
+            'Content-Type' => 'application/json',
+        ])->delete('https://api.twitch.tv/helix/moderation/chat', [
+            'broadcaster_id' => '190291001',
+            'moderator_id' => '896529196'
+        ]);
+
+        return $response->json();
+    }
+
     public function permBan($user)
     {
         $response = Http::withHeaders([
