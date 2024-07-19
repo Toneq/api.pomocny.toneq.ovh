@@ -5,7 +5,7 @@ namespace App\Services;
 use Illuminate\Support\Facades\Http;
 use OTPHP\TOTP;
 use App\Models\AccessToken;
-use Illuminate\Support\Facades\Log;
+use App\Services\EventService;
 
 class TwitchService
 {
@@ -32,7 +32,7 @@ class TwitchService
             'broadcaster_id' => '190291001',
             'title' => $title,
         ]);
-
+        new EventService("event", "twitch:set-title", "test", ["title" => $title]);
         return $response->json();
     }
 
@@ -46,7 +46,7 @@ class TwitchService
             'broadcaster_id' => '190291001',
             'game_id' => $game,
         ]);
-
+        new EventService("event", "twitch:set-category", "test", ["category" => $game]);
         return $response->json();
     }
 
@@ -60,7 +60,7 @@ class TwitchService
             'broadcaster_id' => '190291001',
             'moderator_id' => '896529196'
         ]);
-
+        new EventService("event", "twitch:clear-chat", "test", []);
         return $response->json();
     }
 
@@ -78,7 +78,7 @@ class TwitchService
                 'reason' => 'no reason'
             ]
         ]);
-
+        new EventService("event", "twitch:permban", "test", ["user" => $user]);
         return $response->json();
     }
 
@@ -97,7 +97,7 @@ class TwitchService
                 'duration' => $duration
             ]
         ]);
-
+        new EventService("event", "twitch:tempban", "test", ["user" => $user, "duration" => $duration]);
         return $response->json();
     }
 
@@ -112,7 +112,7 @@ class TwitchService
             'moderator_id' => '896529196',
             'user_id' => $user
         ]);
-
+        new EventService("event", "twitch:unban", "test", ["user" => $user]);
         return $response->json();
     }
 
@@ -127,7 +127,7 @@ class TwitchService
             'moderator_id' => '896529196',
             'message_id' => $messageId
         ]);
-
+        new EventService("event", "twitch:delete-message", "test", ["messageId" => $messageId]);
         return $response->json();
     }
 

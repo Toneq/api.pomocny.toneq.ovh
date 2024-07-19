@@ -18,12 +18,7 @@ Route::group([
     Route::get('/user-profile', [AuthController::class, 'user_profile']);    
 });
 
-Route::post('/test-message', [EventController::class, 'test_message']);
-Route::post('/test-follow', [EventController::class, 'test_follow']);
+Route::post('/send-event', EventController::class);
 Route::post('/message-test', [StreamController::class, 'sendMessage']);
-Route::post('/ban-test', [StreamController::class, 'permBan']);
-Route::post('/dm-test', [StreamController::class, 'deleteMessage']);
-Route::post('/ub-test', [StreamController::class, 'unban']);
-Route::post('/kat', [StreamController::class, 'createKickToken']);
 // Route::get('/subscribe/{user}/event', [EventController::class, 'subscribe']);
 // Route::get('/search/{search}', [SearchController::class, 'search'])->where('search', '.*');

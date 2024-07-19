@@ -5,22 +5,35 @@ namespace App\Http\Controllers;
 use Illuminate\Support\Facades\Redis;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 use Predis\Connection\ConnectionException;
+use Illuminate\Http\Request;
 use App\Services\EventService;
 class EventController extends Controller
 {
-    protected $eventService;
 
-    public function __construct(EventService $eventService,){
-        $this->eventService = $eventService;
+
+    protected $request;
+
+    public function __construct(Request $request)
+    {
+        $type = $request->input("type");
+        $event = $request->input("event");
+        $channelName = $request->input("channel");
+        $data = $request->input("data");
+
+        new EventService($type, $event, $channelName, $data);
     }
 
-    public function test_message(){
-        return $this->eventService->test_message();
-    }    
-
-    public function test_follow(){
-        return $this->eventService->test_follow();
+    public function __invoke(Request $request)
+    {
+        // Możesz dodać tutaj dodatkową logikę
+        return response()->json(['status' => 'success']);
     }
+
+    // protected $eventService;
+
+    // public function __construct(EventService $eventService,){
+    //     $this->eventService = $eventService;
+    // }
 
     // public function subscribe($user)
     // {
