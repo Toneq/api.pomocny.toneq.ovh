@@ -25,7 +25,6 @@ class EventController extends Controller
 
     public function __invoke(Request $request)
     {
-        // Możesz dodać tutaj dodatkową logikę
         return response()->json(['status' => 'success']);
     }
 

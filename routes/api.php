@@ -18,7 +18,27 @@ Route::group([
     Route::get('/user-profile', [AuthController::class, 'user_profile']);    
 });
 
-Route::post('/send-event', EventController::class);
-Route::post('/message-test', [StreamController::class, 'sendMessage']);
+Route::prefix('stream')->group(function () {
+    Route::prefix('event')->group(function () {
+        Route::post('send', EventController::class);
+    });
+
+    Route::prefix('chat')->group(function () {
+        Route::post('message', [StreamController::class, 'sendMessage']);
+        Route::delete('message', [StreamController::class, 'deleteMessage']);
+        Route::delete('clear', [StreamController::class, 'clearChat']);
+    });
+
+    Route::prefix('info')->group(function () {
+        Route::post('category', [StreamController::class, 'setCategory']);
+        Route::post('title', [StreamController::class, 'setTitle']);
+    });
+
+    Route::prefix('user')->group(function () {
+        Route::post('permban', [StreamController::class, 'permBan']);
+        Route::post('tempban', [StreamController::class, 'tempBan']);
+        Route::delete('unban', [StreamController::class, 'unban']);
+    });
+});
 // Route::get('/subscribe/{user}/event', [EventController::class, 'subscribe']);
 // Route::get('/search/{search}', [SearchController::class, 'search'])->where('search', '.*');
