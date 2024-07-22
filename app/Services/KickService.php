@@ -7,6 +7,7 @@ use App\Models\AccessToken;
 use App\Services\EventService;
 use CurlImpersonate\CurlImpersonate;
 use Illuminate\Support\Facades\Process;
+use Illuminate\Support\Facades\Storage;
 
 class KickService
 {
@@ -25,87 +26,131 @@ class KickService
 
     public function setTitle($title)
     {
+        $json = [
+            "command" => "title",
+            "parameter" => $title
+        ];
+
         $command = [
             '/var/www/api.pomocny.toneq.ovh/curl/curl_chrome116',
             '-H', 'Authorization: Bearer ' . $this->accessToken,
             '-H', 'Content-Type: application/json',
-            '-X', 'POST',
-            '-d', 'command=title',
-            '-d', 'parameter=' . $title,
+            '-d', json_encode($json),
             'https://kick.com/api/v2/channels/toneq/chat-commands'
         ];
-        $result = Process::run($command);
-        $output = $result->output();
-        new EventService("event", "kick:set-title", "test", ["title" => $title]);
-        return $output;
+        $result = Process::run($command);        
+
+        if ($result->successful()) {
+            new EventService("event", "kick:set-title", "test", ["title" => $title]);
+            $output = json_decode($result->output(), true);
+            return response()->json($output, 200, [], JSON_PRETTY_PRINT);
+        } else {
+            $errorOutput = $result->errorOutput();
+            return response()->json(['error' => 'Unban failed', 'details' => $errorOutput], 500);
+        }
     }
 
     public function setCategory($game)
     {
+        $json = [
+            "command" => "category",
+            "parameter" => $game
+        ];
+
         $command = [
             '/var/www/api.pomocny.toneq.ovh/curl/curl_chrome116',
             '-H', 'Authorization: Bearer ' . $this->accessToken,
             '-H', 'Content-Type: application/json',
-            '-X', 'POST',
-            '-d', 'command=category',
-            '-d', 'parameter=' . $game,
+            '-d', json_encode($json),
             'https://kick.com/api/v2/channels/toneq/chat-commands'
         ];
-        $result = Process::run($command);
-        $output = $result->output();
-        new EventService("event", "kick:set-category", "test", ["category" => $game]);
-        return $output;
+        $result = Process::run($command);        
+
+        if ($result->successful()) {
+            new EventService("event", "kick:set-category", "test", ["category" => $game]);
+            $output = json_decode($result->output(), true);
+            return response()->json($output, 200, [], JSON_PRETTY_PRINT);
+        } else {
+            $errorOutput = $result->errorOutput();
+            return response()->json(['error' => 'Unban failed', 'details' => $errorOutput], 500);
+        }
     }
 
     public function clearChat()
     {
+        $json = [
+            "command" => "clear"
+        ];
+
         $command = [
             '/var/www/api.pomocny.toneq.ovh/curl/curl_chrome116',
             '-H', 'Authorization: Bearer ' . $this->accessToken,
             '-H', 'Content-Type: application/json',
-            '-X', 'POST',
-            '-d', 'command=clear',
+            '-d', json_encode($json),
             'https://kick.com/api/v2/channels/toneq/chat-commands'
         ];
         $result = Process::run($command);        
-        $output = $result->output();
-        new EventService("event", "kick:clear-chat", "test", []);
-        return $output;
+
+        if ($result->successful()) {
+            new EventService("event", "kick:clear-chat", "test", []);
+            return json_decode($result->output(), true);
+        } else {
+            $errorOutput = $result->errorOutput();
+            return response()->json(['error' => 'Unban failed', 'details' => $errorOutput], 500);
+        }
     }
 
     public function permBan($user)
     {
-        $command = [
-            '/var/www/api.pomocny.toneq.ovh/curl/curl_chrome116',
-            '-H', 'Authorization: Bearer ' . $this->accessToken,
-            // '-H', 'Content-Type: application/json',
-            '-X', 'POST',
-            '-d', 'banned_username=' . $user,
-            '-d', 'permanent=true',
-            'https://kick.com/api/v2/channels/toneq/bans'
-        ];      
-        $result = Process::run($command);      
-        $output = $result->output();
-        new EventService("event", "kick:permban", "test", ["user" => $user]);
-        return $output;
-    }
+        $json = [
+            "banned_username" => $user,
+            "permanent" => true
+        ];
 
-    public function tempBan($user, $duration)
-    {
         $command = [
             '/var/www/api.pomocny.toneq.ovh/curl/curl_chrome116',
             '-H', 'Authorization: Bearer ' . $this->accessToken,
             '-H', 'Content-Type: application/json',
-            '-X', 'POST',
-            '-d', 'banned_username=' . $user,
-            '-d', 'permanent=false',
-            '-d', 'duration=' . $duration,
+            '-d', json_encode($json),
+            'https://kick.com/api/v2/channels/toneq/bans'
+        ];      
+        $result = Process::run($command);  
+        
+        if ($result->successful()) {
+            new EventService("event", "kick:permban", "test", ["user" => $user]);
+            $output = json_decode($result->output(), true);
+            return response()->json($output, 200, [], JSON_PRETTY_PRINT);
+        } else {
+            $errorOutput = $result->errorOutput();
+            return response()->json(['error' => 'Unban failed', 'details' => $errorOutput], 500);
+        }
+    }
+
+    public function tempBan($user, $duration)
+    {
+        $json = [
+            "banned_username" => $user,
+            "permanent" => false,
+            "duration" => $duration
+        ];
+
+        $command = [
+            '/var/www/api.pomocny.toneq.ovh/curl/curl_chrome116',
+            '-H', 'Authorization: Bearer ' . $this->accessToken,
+            '-H', 'Content-Type: application/json',
+            '-d', json_encode($json),
             'https://kick.com/api/v2/channels/toneq/bans'
         ];
         $result = Process::run($command);
-        $output = $result->output();
-        new EventService("event", "kick:tempban", "test", ["user" => $user, "duration" => $duration]);
-        return $output;
+    
+        if ($result->successful()) {
+            new EventService("event", "kick:tempban", "test", ["user" => $user, "duration" => $duration]);
+            $output = json_decode($result->output(), true);
+            return response()->json($output, 200, [], JSON_PRETTY_PRINT);
+        } else {
+            $errorOutput = $result->errorOutput();
+            return response()->json(['error' => 'Unban failed', 'details' => $errorOutput], 500);
+        }
     }
 
     public function unban($user)
@@ -118,9 +163,15 @@ class KickService
             'https://kick.com/api/v2/channels/toneq/bans/' . $user
         ];
         $result = Process::run($command);
-        $output = $result->output();
-        new EventService("event", "kick:unban", "test", ["user" => $user]);
-        return $output;
+    
+        if ($result->successful()) {
+            new EventService("event", "kick:unban", "test", ["user" => $user]);
+            $output = json_decode($result->output(), true);
+            return response()->json($output, 200, [], JSON_PRETTY_PRINT);
+        } else {
+            $errorOutput = $result->errorOutput();
+            return response()->json(['error' => 'Unban failed', 'details' => $errorOutput], 500);
+        }
     }
 
     public function deleteMessage($messageId)
@@ -133,25 +184,41 @@ class KickService
             'https://kick.com/api/v2/chatrooms/196508/messages/' . $messageId
         ];
         $result = Process::run($command);
-        $output = $result->output();
-        new EventService("event", "kick:delete-message", "test", ["messageId" => $messageId]);
-        return $output;
+    
+        if ($result->successful()) {
+            new EventService("event", "kick:delete-message", "test", ["messageId" => $messageId]);
+            $output = json_decode($result->output(), true);
+            return response()->json($output, 200, [], JSON_PRETTY_PRINT);
+        } else {
+            $errorOutput = $result->errorOutput();
+            return response()->json(['error' => 'Unban failed', 'details' => $errorOutput], 500);
+        }
     }
 
     public function sendMessage($message)
     {
+        $json = [
+            "type" => "message",
+            "content" => $message
+        ];
+
+
         $command = [
             '/var/www/api.pomocny.toneq.ovh/curl/curl_chrome116',
             '-H', 'Authorization: Bearer ' . $this->accessToken,
-            // '-H', 'Content-Type: application/json',
-            '-X', 'POST',
-            '-d', 'type=message',
-            '-d', 'content=' . $message,
+            '-H', 'Content-Type: application/json',
+            '-d', json_encode($json),
             'https://kick.com/api/v2/messages/send/196508'
         ];
         $result = Process::run($command);
-        $output = $result->output();
-        return $output;
+    
+        if ($result->successful()) {
+            $output = json_decode($result->output(), true);
+            return response()->json($output, 200, [], JSON_PRETTY_PRINT);
+        } else {
+            $errorOutput = $result->errorOutput();
+            return response()->json(['error' => 'Unban failed', 'details' => $errorOutput], 500);
+        }
     }
 
     public function createAccessToken()
@@ -209,6 +276,7 @@ class KickService
     }
 
     private function getAccessToken(){
+        // print_r(AccessToken::where('service', 'kick')->pluck('token')->first());
         return AccessToken::where('service', 'kick')->pluck('token')->first();
     }
 }
