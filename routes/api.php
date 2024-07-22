@@ -40,5 +40,15 @@ Route::prefix('stream')->group(function () {
         Route::delete('unban', [StreamController::class, 'unban']);
     });
 });
+
+Route::prefix('bots')->group(function () {
+    Route::prefix('kick')->group(function () {
+        Route::get('otp', [StreamController::class, 'getOTP']);
+    });
+
+    // Route::prefix('twitch')->group(function () {
+    //     Route::post('otp', EventController::class);
+    // });
+});
 // Route::get('/subscribe/{user}/event', [EventController::class, 'subscribe']);
 // Route::get('/search/{search}', [SearchController::class, 'search'])->where('search', '.*');
