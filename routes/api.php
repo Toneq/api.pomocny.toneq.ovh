@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Controllers\EventController;
 use App\Http\Controllers\SearchController;
 use App\Http\Controllers\StreamController;
+use App\Http\Controllers\TwitchController;
 
 Route::group([
     'middleware' => 'api'
@@ -49,6 +50,11 @@ Route::prefix('bots')->group(function () {
     // Route::prefix('twitch')->group(function () {
     //     Route::post('otp', EventController::class);
     // });
+});
+
+Route::prefix('twitch')->group(function () {
+    Route::get('auth', [TwitchController::class, 'getAuthUrl']);
+    Route::post('auth/callback', [TwitchController::class, 'handleCallback']);
 });
 // Route::get('/subscribe/{user}/event', [EventController::class, 'subscribe']);
 // Route::get('/search/{search}', [SearchController::class, 'search'])->where('search', '.*');
