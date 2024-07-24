@@ -8,4 +8,6 @@ use Illuminate\Database\Eloquent\Model;
 class StreamProvider extends Model
 {
     use HasFactory;
+
+    protected $table = 'stream_providers';
 }

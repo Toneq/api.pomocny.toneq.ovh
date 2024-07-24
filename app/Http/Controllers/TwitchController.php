@@ -57,7 +57,7 @@ class TwitchController extends Controller
         </script>"; 
 
         if($user){
-            $connected = StreanProvider::where('user_provider_id', $user["channel"])
+            $connected = StreamProvider::where('user_provider_id', $user["id"])
                                         ->first();
 
             if($connected) {
