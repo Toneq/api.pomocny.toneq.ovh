@@ -50,12 +50,6 @@ class TwitchController extends Controller
     public function handleTwitchCallback()
     {
         $user = Socialite::driver('twitch')->stateless()->user();
-
-        echo "<script>
-            window.opener.postMessage(" . json_encode($user) . ", '" . url('https://pomocny.toneq.ovh/providers') . "');
-            window.close();
-        </script>"; 
-
         // $user["token"];
         // $user["refreshToken"];
 
