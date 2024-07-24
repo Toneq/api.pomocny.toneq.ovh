@@ -13,6 +13,9 @@ return new class extends Migration
     {
         Schema::create('stream_providers', function (Blueprint $table) {
             $table->id();
+            $table->integer('user_id');
+            $table->integer('user_provider_id');
+            $table->integer('active');
             $table->timestamps();
         });
     }
