@@ -56,6 +56,9 @@ class TwitchController extends Controller
             window.close();
         </script>"; 
 
+        // $user["token"];
+        // $user["refreshToken"];
+
         if($user){
             $connected = StreamProvider::where('user_provider_id', $user["id"])
                                         ->first();
@@ -72,6 +75,13 @@ class TwitchController extends Controller
                     window.close();
                 </script>";                
             }
+
+            $accessToken = StreamProvider::create([
+                'user_id' => 1,
+                'service' => 'twitch',
+                'user_provider_id' => $user["id"],
+                'active' => 1
+            ]);
 
             $data = [
                 "success" => true,

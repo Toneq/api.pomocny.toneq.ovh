@@ -261,6 +261,7 @@ class KickService
 
         AccessToken::updateOrCreate(
             ['service' => 'kick'],
+            ['user' => 'bot'],
             ['token' => $token]
         );
 

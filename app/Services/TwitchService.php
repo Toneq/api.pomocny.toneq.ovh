@@ -175,6 +175,7 @@ class TwitchService
             $token = $response->json()['access_token'];
             AccessToken::updateOrCreate(
                 ['service' => 'twitch'],
+                ['user' => 'bot'],
                 ['token' => $token]
             );
             return response()->json(['token' => $token]);
