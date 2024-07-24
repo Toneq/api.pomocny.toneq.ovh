@@ -275,8 +275,11 @@ class KickService
         return response()->json(['code' => $code]);
     }
 
-    private function getAccessToken(){
+    private function getAccessToken($type){
         // print_r(AccessToken::where('service', 'kick')->pluck('token')->first());
-        return AccessToken::where('service', 'kick')->pluck('token')->first();
+        return AccessToken::where('service', 'kick')
+                            ->where('user', $type)
+                            ->pluck('token')
+                            ->first();
     }
 }

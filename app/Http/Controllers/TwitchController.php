@@ -5,9 +5,18 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
 use Laravel\Socialite\Facades\Socialite;
+use App\Services\TwitchService;
+use App\Models\StreamProvider;
 
 class TwitchController extends Controller
 {
+    protected $twitchService;
+
+    public function __construct(TwitchService $twitchService)
+    {
+        $this->twitchService = $twitchService;
+    }
+
     public function getTwitchAuthUrl()
     {
         return Socialite::driver('twitch')
@@ -42,7 +51,28 @@ class TwitchController extends Controller
     {
         $user = Socialite::driver('twitch')->stateless()->user();
 
+        echo "<script>
+            window.opener.postMessage(" . json_encode($user) . ", '" . url('https://pomocny.toneq.ovh/providers') . "');
+            window.close();
+        </script>"; 
+
         if($user){
+            $connected = StreanProvider::where('user_provider_id', $user["channel"])
+                                        ->first();
+
+            if($connected) {
+                $data = [
+                    "success" => false,
+                    "message" => "To konto jest już przypisane do innego konta",
+                    "data" => []
+                ];
+    
+                echo "<script>
+                    window.opener.postMessage(" . json_encode($data) . ", '" . url('https://pomocny.toneq.ovh/providers') . "');
+                    window.close();
+                </script>";                
+            }
+
             $data = [
                 "success" => true,
                 "message" => "Konto zostało połączone",

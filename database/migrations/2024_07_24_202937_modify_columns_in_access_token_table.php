@@ -12,7 +12,8 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('access_token', function (Blueprint $table) {
-            $table->string('user');
+            $table->timestamp('created_at')->nullable()->after('user')->change();
+            $table->timestamp('updated_at')->nullable()->after('created_at')->change();
         });
     }
 
@@ -22,7 +23,8 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('access_token', function (Blueprint $table) {
-            $table->dropColumn('user');
+            $table->timestamp('created_at')->nullable()->after('type')->change();
+            $table->timestamp('updated_at')->nullable()->after('created_at')->change();
         });
     }
 };

@@ -184,9 +184,9 @@ class TwitchService
     }
 
     private function getAccessToken($type){
-        return AccessToken::where([
-            ['service', '=', 'twitch'],
-            ['type', '=', $type]
-        ])->pluck('token')->first();
+        return AccessToken::where('service', 'twitch')
+                            ->where('user', $type)
+                            ->pluck('token')
+                            ->first();
     }
 }
