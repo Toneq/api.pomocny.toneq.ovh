@@ -51,10 +51,10 @@ Route::prefix('bots')->group(function () {
     //     Route::post('otp', EventController::class);
     // });
 });
-
-Route::prefix('twitch')->group(function () {
-    Route::get('auth', [TwitchController::class, 'getAuthUrl']);
-    Route::post('auth/callback', [TwitchController::class, 'handleCallback']);
-});
+// Route::prefix('provider')->group(function () {
+//     Route::prefix('twitch')->group(function () {
+//         Route::get('link', [TwitchController::class, 'getTwitchAuthUrl']);
+//     });
+// });
 // Route::get('/subscribe/{user}/event', [EventController::class, 'subscribe']);
 // Route::get('/search/{search}', [SearchController::class, 'search'])->where('search', '.*');

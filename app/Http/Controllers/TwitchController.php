@@ -4,50 +4,66 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
+use Laravel\Socialite\Facades\Socialite;
 
 class TwitchController extends Controller
 {
-    private $clientId;
-    private $clientSecret;
-    private $redirectUri;
-
-    public function __construct()
+    public function getTwitchAuthUrl()
     {
-        $this->clientId = env('TWITCH_CLIENT_ID');
-        $this->clientSecret = env('TWITCH_CLIENT_SECRET');
-        $this->redirectUri = env('TWITCH_REDIRECT_URI');
+        return Socialite::driver('twitch')
+                    ->scopes([
+                        'user:read:email',
+                        'user:read:broadcast',
+                        'channel:manage:broadcast',
+                        'channel:read:redemptions',
+                        'chat:read',
+                        'channel:moderate',
+                        'bits:read',
+                        'channel_subscriptions',
+                        'channel:read:subscriptions',
+                        'channel:manage:predictions',
+                        'channel:manage:polls',
+                        'channel:edit:commercial',
+                        'channel:read:charity',
+                        'channel:read:cheers',
+                        'moderator:read:chatters',
+                        'channel:read:vips',
+                        'moderation:read',
+                        'moderator:read:followers',
+                        'channel:read:hype_train',
+                        'channel:bot',
+                        'channel:manage:ads',
+                        'channel:read:ads'
+                    ])
+                    ->redirect();
     }
 
-    public function getAuthUrl()
+    public function handleTwitchCallback()
     {
-        $url = 'https://id.twitch.tv/oauth2/authorize' . 
-               '?client_id=' . $this->clientId . 
-               '&redirect_uri=' . $this->redirectUri . 
-               '&response_type=code' . 
-               '&scope=user:read:email';
+        $user = Socialite::driver('twitch')->stateless()->user();
 
-        return response()->json(['url' => $url]);
-    }
+        if($user){
+            $data = [
+                "success" => true,
+                "message" => "Konto zostało połączone",
+                "data" => []
+            ];
 
-    public function handleCallback(Request $request)
-    {
-        $code = $request->input('code');
+            echo "<script>
+                window.opener.postMessage(" . json_encode($data) . ", '" . url('https://pomocny.toneq.ovh/providers') . "');
+                window.close();
+            </script>";
+        } else {
+            $data = [
+                "success" => false,
+                "message" => "Niestaty nie udało się połączyć konta!",
+                "data" => []
+            ];
+            echo "<script>
+                window.opener.postMessage(" . json_encode($data) . ", '" . url('https://pomocny.toneq.ovh/providers') . "');
+                window.close();
+            </script>";
+        }
 
-        $response = Http::post('https://id.twitch.tv/oauth2/token', [
-            'client_id' => $this->clientId,
-            'client_secret' => $this->clientSecret,
-            'code' => $code,
-            'grant_type' => 'authorization_code',
-            'redirect_uri' => $this->redirectUri,
-        ]);
-
-        $data = $response->json();
-
-        $userInfo = Http::withHeaders([
-            'Authorization' => 'Bearer ' . $data['access_token'],
-            'Client-Id' => $this->clientId,
-        ])->get('https://api.twitch.tv/helix/users');
-
-        return response()->json($userInfo->json());
     }
 }
