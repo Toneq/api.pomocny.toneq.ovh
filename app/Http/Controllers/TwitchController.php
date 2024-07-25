@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Http;
 use Laravel\Socialite\Facades\Socialite;
 use App\Services\TwitchService;
 use App\Models\StreamProvider;
+use App\Models\AccessToken;
 use Illuminate\Support\Facades\Session;
 use Tymon\JWTAuth\Facades\JWTAuth;
 use Validator;
@@ -61,10 +62,6 @@ class TwitchController extends Controller
 
         JWTAuth::setToken($token);
         $appUser = JWTAuth::authenticate();
-        // $appUser = JWTAuth::parseToken()->authenticate();
-        // $user["token"];
-        // $user["refreshToken"];
-        // $user["nickname"];
         
         if(!$twitchUser){
             $data = [
@@ -84,7 +81,11 @@ class TwitchController extends Controller
             $this->postMessage($data);
         }
 
-        $connected = StreamProvider::where('user_provider_id', $twitchUser["id"])
+        $twitchId = $twitchUser["id"];
+        $twitchAccessToken = $twitchUser->accessTokenResponseBody['access_token'];
+        $twitchRefreshToken = $twitchUser->accessTokenResponseBody['refresh_token'];
+
+        $connected = StreamProvider::where('user_provider_id', $twitchId)
                                     ->first();
 
         if($connected) {
@@ -101,23 +102,12 @@ class TwitchController extends Controller
         StreamProvider::create([
             'user_id' => $appUser->id,
             'service' => 'twitch',
-            'user_provider_id' => $twitchUser["id"],
+            'user_provider_id' => $twitchId,
             'active' => 1
         ]);
 
-        AccessToken::updateOrCreate(
-            ['service' => 'twitch'],
-            ['user' => $appUser->id],
-            ['type' => 'access'],
-            ['token' => $twitchUser["token"]]
-        );
-
-        AccessToken::updateOrCreate(
-            ['service' => 'twitch'],
-            ['user' => $appUser->id],
-            ['type' => 'refresh'],
-            ['token' => $twitchUser["refreshToken"]]
-        );
+        AccessToken::updateOrCreateToken($twitchAccessToken, 'twitch', 'access', $appUser->id);
+        AccessToken::updateOrCreateToken($twitchRefreshToken, 'twitch', 'refresh', $appUser->id);
 
         $data = [
             "success" => true,

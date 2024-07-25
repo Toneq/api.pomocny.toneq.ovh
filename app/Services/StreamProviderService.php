@@ -13,8 +13,9 @@ class StreamProviderService
         try {
             $user = JWTAuth::parseToken()->authenticate();
             $providers = StreamProvider::where('user_id', $user->id)->get();
-
-            return response()->json($providers);
+            $services = $providers->pluck('service');
+            
+            return response()->json($services);
         } catch (JWTException $e) {
             return response()->json(['error' => 'Unauthorized'], 401);
         }

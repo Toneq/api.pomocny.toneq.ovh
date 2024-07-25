@@ -11,9 +11,19 @@ class AccessToken extends Model
 
     protected $table = 'access_token';
 
-    protected $fillable = [
-        'service',
-        'token',
-        'type',
-    ];
+    protected $fillable = ['token', 'service', 'type', 'user'];
+
+    public static function updateOrCreateToken($token, $service, $type, $userId)
+    {
+        return self::updateOrCreate(
+            [
+                'service' => $service,
+                'type' => $type,
+                'user' => $userId
+            ],
+            [
+                'token' => $token
+            ]
+        );
+    }
 }
