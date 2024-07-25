@@ -162,27 +162,28 @@ class TwitchService
         return $response->json();
     }
 
-    public function createAccessToken()
-    {
-        $response = Http::post('https://id.twitch.tv/oauth2/token', [
-            'grant_type' => 'refresh_token',
-            'refresh_token' => $this->accessTokenBot,
-            'client_id' => $this->clientId,
-            'client_secret' => $this->clientSecret,
-        ]);
+    // public function createAccessToken()
+    // {
+    //     $response = Http::post('https://id.twitch.tv/oauth2/token', [
+    //         'grant_type' => 'refresh_token',
+    //         'refresh_token' => $this->accessTokenBot,
+    //         'client_id' => $this->clientId,
+    //         'client_secret' => $this->clientSecret,
+    //     ]);
 
-        if ($response->successful()) {
-            $token = $response->json()['access_token'];
-            AccessToken::updateOrCreate(
-                ['service' => 'twitch'],
-                ['user' => 'bot'],
-                ['token' => $token]
-            );
-            return response()->json(['token' => $token]);
-        } else {
-            return response()->json(['error' => 'failed create access token'], 500);
-        }
-    }
+    //     if ($response->successful()) {
+    //         $token = $response->json()['access_token'];
+    //         AccessToken::updateOrCreate(
+    //             ['service' => 'twitch'],
+    //             ['user' => 'bot'],
+    //             ['type' => 'bot'],
+    //             ['token' => $token]
+    //         );
+    //         return response()->json(['token' => $token]);
+    //     } else {
+    //         return response()->json(['error' => 'failed create access token'], 500);
+    //     }
+    // }
 
     private function getAccessToken($type){
         return AccessToken::where('service', 'twitch')

@@ -7,6 +7,10 @@ use Illuminate\Support\Facades\Http;
 use Laravel\Socialite\Facades\Socialite;
 use App\Services\TwitchService;
 use App\Models\StreamProvider;
+use Illuminate\Support\Facades\Session;
+use Tymon\JWTAuth\Facades\JWTAuth;
+use Validator;
+use Tymon\JWTAuth\Exceptions\JWTException;
 
 class TwitchController extends Controller
 {
@@ -17,8 +21,11 @@ class TwitchController extends Controller
         $this->twitchService = $twitchService;
     }
 
-    public function getTwitchAuthUrl()
+    public function getTwitchAuthUrl(Request $request)
     {
+        $token = $request->query('token');
+        Session::put('auth_token', $token);
+
         return Socialite::driver('twitch')
                     ->scopes([
                         'user:read:email',
@@ -49,55 +56,82 @@ class TwitchController extends Controller
 
     public function handleTwitchCallback()
     {
-        $user = Socialite::driver('twitch')->stateless()->user();
+        $token = Session::pull('auth_token');
+        $twitchUser = Socialite::driver('twitch')->stateless()->user();
+
+        JWTAuth::setToken($token);
+        $appUser = JWTAuth::authenticate();
+        // $appUser = JWTAuth::parseToken()->authenticate();
         // $user["token"];
         // $user["refreshToken"];
-
-        if($user){
-            $connected = StreamProvider::where('user_provider_id', $user["id"])
-                                        ->first();
-
-            if($connected) {
-                $data = [
-                    "success" => false,
-                    "message" => "To konto jest już przypisane do innego konta",
-                    "data" => []
-                ];
-    
-                echo "<script>
-                    window.opener.postMessage(" . json_encode($data) . ", '" . url('https://pomocny.toneq.ovh/providers') . "');
-                    window.close();
-                </script>";                
-            }
-
-            $accessToken = StreamProvider::create([
-                'user_id' => 1,
-                'service' => 'twitch',
-                'user_provider_id' => $user["id"],
-                'active' => 1
-            ]);
-
-            $data = [
-                "success" => true,
-                "message" => "Konto zostało połączone",
-                "data" => []
-            ];
-
-            echo "<script>
-                window.opener.postMessage(" . json_encode($data) . ", '" . url('https://pomocny.toneq.ovh/providers') . "');
-                window.close();
-            </script>";
-        } else {
+        // $user["nickname"];
+        
+        if(!$twitchUser){
             $data = [
                 "success" => false,
-                "message" => "Niestaty nie udało się połączyć konta!",
+                "message" => "Brak autoryzacji z twitch!",
                 "data" => []
             ];
-            echo "<script>
-                window.opener.postMessage(" . json_encode($data) . ", '" . url('https://pomocny.toneq.ovh/providers') . "');
-                window.close();
-            </script>";
+            $this->postMessage($data);
         }
 
+        if(!$appUser){
+            $data = [
+                "success" => false,
+                "message" => "Brak autoryzacji z aplikacji!",
+                "data" => []
+            ];
+            $this->postMessage($data);
+        }
+
+        $connected = StreamProvider::where('user_provider_id', $twitchUser["id"])
+                                    ->first();
+
+        if($connected) {
+            $data = [
+                "success" => false,
+                "message" => "To konto jest już przypisane do innego konta",
+                "data" => [
+                    "pageToken" => $token,
+                ]
+            ];
+            $this->postMessage($data);
+        }
+
+        StreamProvider::create([
+            'user_id' => $appUser->id,
+            'service' => 'twitch',
+            'user_provider_id' => $twitchUser["id"],
+            'active' => 1
+        ]);
+
+        AccessToken::updateOrCreate(
+            ['service' => 'twitch'],
+            ['user' => $appUser->id],
+            ['type' => 'access'],
+            ['token' => $twitchUser["token"]]
+        );
+
+        AccessToken::updateOrCreate(
+            ['service' => 'twitch'],
+            ['user' => $appUser->id],
+            ['type' => 'refresh'],
+            ['token' => $twitchUser["refreshToken"]]
+        );
+
+        $data = [
+            "success" => true,
+            "message" => "Konto zostało połączone",
+            "data" => []
+        ];
+        $this->postMessage($data);
+    }
+
+    private function postMessage($data){
+        echo "<script>
+            window.opener.postMessage(" . json_encode($data) . ", '" . url('https://pomocny.toneq.ovh/providers') . "');
+            window.close();
+        </script>";
+        return;
     }
 }

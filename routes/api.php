@@ -17,6 +17,7 @@ Route::group([
     Route::post('/logout', [AuthController::class, 'logout']);
     Route::post('/refresh', [AuthController::class, 'refresh']);
     Route::get('/user-profile', [AuthController::class, 'user_profile']);    
+    Route::get('/providers', [Controller::class, 'getAccontProviders']);   
 });
 
 Route::prefix('stream')->group(function () {
@@ -47,14 +48,6 @@ Route::prefix('bots')->group(function () {
         Route::get('otp', [StreamController::class, 'getOTP']);
     });
 
-    // Route::prefix('twitch')->group(function () {
-    //     Route::post('otp', EventController::class);
-    // });
 });
-// Route::prefix('provider')->group(function () {
-//     Route::prefix('twitch')->group(function () {
-//         Route::get('link', [TwitchController::class, 'getTwitchAuthUrl']);
-//     });
-// });
 // Route::get('/subscribe/{user}/event', [EventController::class, 'subscribe']);
 // Route::get('/search/{search}', [SearchController::class, 'search'])->where('search', '.*');
