@@ -85,13 +85,29 @@ class TwitchController extends Controller
         $twitchAccessToken = $twitchUser->accessTokenResponseBody['access_token'];
         $twitchRefreshToken = $twitchUser->accessTokenResponseBody['refresh_token'];
 
-        $connected = StreamProvider::where('user_provider_id', $twitchId)
+        $isProvider = StreamProvider::where('user_provider_id', $twitchId)
+                                    ->where('service', 'twitch')
                                     ->first();
 
-        if($connected) {
+        if($isProvider) {
             $data = [
                 "success" => false,
                 "message" => "To konto jest już przypisane do innego konta",
+                "data" => [
+                    "pageToken" => $token,
+                ]
+            ];
+            $this->postMessage($data);
+        }
+
+        $isConnected = StreamProvider::where('user_id', $appUser->id)
+                                    ->where('service', 'twitch')
+                                    ->first();
+
+        if($isConnected) {
+            $data = [
+                "success" => false,
+                "message" => "Użytkownik ma już przypisane konto TWITCH",
                 "data" => [
                     "pageToken" => $token,
                 ]

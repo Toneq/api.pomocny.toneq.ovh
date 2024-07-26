@@ -8,6 +8,7 @@ use App\Http\Controllers\EventController;
 use App\Http\Controllers\SearchController;
 use App\Http\Controllers\StreamController;
 use App\Http\Controllers\TwitchController;
+use App\Http\Controllers\KickController;
 
 Route::group([
     'middleware' => 'api'
@@ -18,6 +19,13 @@ Route::group([
     Route::post('/refresh', [AuthController::class, 'refresh']);
     Route::get('/user-profile', [AuthController::class, 'user_profile']);    
     Route::get('/providers', [Controller::class, 'getAccontProviders']);   
+
+    Route::prefix('provider')->group(function () {
+        Route::prefix('kick')->group(function () {
+            Route::get('generate-verify-code', [KickController::class, 'generateKickVerifyCode']);
+            Route::post('verify-code', [KickController::class, 'verifyCode']);
+        });
+    });
 });
 
 Route::prefix('stream')->group(function () {
@@ -47,7 +55,6 @@ Route::prefix('bots')->group(function () {
     Route::prefix('kick')->group(function () {
         Route::get('otp', [StreamController::class, 'getOTP']);
     });
-
 });
 // Route::get('/subscribe/{user}/event', [EventController::class, 'subscribe']);
 // Route::get('/search/{search}', [SearchController::class, 'search'])->where('search', '.*');
