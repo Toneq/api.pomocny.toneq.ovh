@@ -24,6 +24,7 @@ Route::group([
         Route::prefix('kick')->group(function () {
             Route::get('generate-verify-code', [KickController::class, 'generateKickVerifyCode']);
             Route::post('verify-code', [KickController::class, 'verifyCode']);
+            Route::post('verify', [KickController::class, 'verify']);
         });
     });
 });
