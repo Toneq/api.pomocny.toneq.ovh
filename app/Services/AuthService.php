@@ -39,8 +39,8 @@ class AuthService
         ]];
         
         $token = JWTAuth::customClaims($customClaims)->fromSubject($user);
-
-        return $this->createNewToken($token);
+        $refreshToken = JWTAuth::setToken($token)->refresh();
+        return $this->createNewToken($token, $refreshToken);
     }
 
     public function register($request){
@@ -90,7 +90,9 @@ class AuthService
         } catch (\Tymon\JWTAuth\Exceptions\JWTException $e) {
             return response()->json(['error' => 'Could not refresh token'], 500);
         }
-        return $this->createNewToken($token);
+
+        $refreshToken = JWTAuth::setToken($token)->refresh();
+        return $this->createNewToken($token, $refreshToken);
     }
 
     public function userProfile(){
@@ -103,11 +105,12 @@ class AuthService
         }
     }
 
-    protected function createNewToken($token){
+    protected function createNewToken($access, $refresh){
         return response()->json([
-            'access_token' => $token,
+            'access_token' => $access,
+            'refresh_token' => $refresh,
             'token_type' => 'bearer',
-            'expires_in' => JWTAuth::factory()->getTTL() * 60
+            'expires_in' => JWTAuth::factory()->getTTL()
         ]);
     }
 }
