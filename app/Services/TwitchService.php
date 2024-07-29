@@ -2,10 +2,16 @@
 
 namespace App\Services;
 
+//models section
+use App\Models\AccessToken;
+
+//services section
+use App\Services\EventService;
+use App\Services\ResponseService;
+
+//others section
 use Illuminate\Support\Facades\Http;
 use OTPHP\TOTP;
-use App\Models\AccessToken;
-use App\Services\EventService;
 
 class TwitchService
 {
@@ -33,7 +39,7 @@ class TwitchService
             'title' => $title,
         ]);
         new EventService("event", "twitch:set-title", "test", ["title" => $title]);
-        return $response->json();
+        new ResponseService(true, "Tytuł został pomyślnie zmieniony", $response, 200);
     }
 
     public function setCategory($game)
@@ -47,7 +53,7 @@ class TwitchService
             'game_id' => $game,
         ]);
         new EventService("event", "twitch:set-category", "test", ["category" => $game]);
-        return $response->json();
+        new ResponseService(true, "Kategoria została pomyślnie zmieniona", $response, 200);
     }
 
     public function clearChat()
@@ -61,7 +67,7 @@ class TwitchService
             'moderator_id' => '896529196'
         ]);
         new EventService("event", "twitch:clear-chat", "test", []);
-        return $response->json();
+        new ResponseService(true, "Czat został wyczyszczony", $response, 200);
     }
 
     public function permBan($user)
@@ -79,7 +85,7 @@ class TwitchService
             ]
         ]);
         new EventService("event", "twitch:permban", "test", ["user" => $user]);
-        return $response->json();
+        new ResponseService(true, "Permban został pomyślnie nadany", $response, 200);
     }
 
     public function tempBan($user, $duration)
@@ -98,7 +104,7 @@ class TwitchService
             ]
         ]);
         new EventService("event", "twitch:tempban", "test", ["user" => $user, "duration" => $duration]);
-        return $response->json();
+        new ResponseService(true, "Tymczasowe wykluczenie zostało pomyślnie nadane", $response, 200);
     }
 
     public function unban($user)
@@ -113,7 +119,7 @@ class TwitchService
             'user_id' => $user
         ]);
         new EventService("event", "twitch:unban", "test", ["user" => $user]);
-        return $response->json();
+        new ResponseService(true, "Unban został pomyślnie nadany", $response, 200);
     }
 
     public function deleteMessage($messageId)
@@ -128,7 +134,7 @@ class TwitchService
             'message_id' => $messageId
         ]);
         new EventService("event", "twitch:delete-message", "test", ["messageId" => $messageId]);
-        return $response->json();
+        new ResponseService(true, "Wiadomość została pomyślnie usunięta", $response, 200);
     }
 
     public function sendMessage($message)
@@ -143,7 +149,7 @@ class TwitchService
             'message' => $message
         ]);
 
-        return $response->json();
+        new ResponseService(true, "Wiadomość została pomyślnie wysłana", $response, 200);
     }
 
     public function sendAnnouncement($message, $color)
@@ -159,7 +165,7 @@ class TwitchService
             'color' => $color
         ]);
 
-        return $response->json();
+        new ResponseService(true, "Powiadomienie zostało pomyślnie wysłane", $response, 200);
     }
 
     // public function createAccessToken()

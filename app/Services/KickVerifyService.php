@@ -2,6 +2,10 @@
 
 namespace App\Services;
 
+//services section
+use App\Services\ResponseService;
+
+//redis section
 use Illuminate\Support\Facades\Redis;
 
 class KickVerifyService
@@ -19,13 +23,11 @@ class KickVerifyService
             ];
     
             Redis::publish('verify:' . $code, json_encode($json));
-            return response()->json(['success' => true]);
-    
+            new ResponseService(true, "Udało się wysłać powiadomienie", [], 200);
         } catch (ConnectionException $e) {
-            return response()->json(['error' => 'Redis connection error: ' . $e->getMessage()], 500);
-    
+            new ResponseService(false, 'Redis connection error: ' . $e->getMessage(), [], 500);
         } catch (\Exception $e) {
-            return response()->json(['error' => 'An error occurred: ' . $e->getMessage()], 500);
+            new ResponseService(false, 'An error occurred: ' . $e->getMessage(), [], 500);
         }
     }
 }

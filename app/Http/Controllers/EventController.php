@@ -2,11 +2,13 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Support\Facades\Redis;
-use Symfony\Component\HttpFoundation\StreamedResponse;
-use Predis\Connection\ConnectionException;
+//Illuminate section
 use Illuminate\Http\Request;
+
+//services section
 use App\Services\EventService;
+use App\Services\ResponseService;
+
 class EventController extends Controller
 {
 
@@ -25,9 +27,8 @@ class EventController extends Controller
 
     public function __invoke(Request $request)
     {
-        return response()->json(['status' => 'success']);
+        new ResponseService(true, "xxx", [], 200);
     }
-
     // protected $eventService;
 
     // public function __construct(EventService $eventService,){

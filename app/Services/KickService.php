@@ -2,12 +2,21 @@
 
 namespace App\Services;
 
-use OTPHP\TOTP;
+//models section
 use App\Models\AccessToken;
+
+//services section
 use App\Services\EventService;
-use CurlImpersonate\CurlImpersonate;
+use App\Services\ResponseService;
+
+//Illuminate section
+use Illuminate\Http\Client\ResponseSequence;
 use Illuminate\Support\Facades\Process;
 use Illuminate\Support\Facades\Storage;
+
+//others section
+use OTPHP\TOTP;
+use CurlImpersonate\CurlImpersonate;
 
 class KickService
 {
@@ -43,10 +52,10 @@ class KickService
         if ($result->successful()) {
             new EventService("event", "kick:set-title", "test", ["title" => $title]);
             $output = json_decode($result->output(), true);
-            return response()->json($output, 200, [], JSON_PRETTY_PRINT);
+            new ResponseService(true, "xxx", $output, 200);
         } else {
             $errorOutput = $result->errorOutput();
-            return response()->json(['error' => 'Unban failed', 'details' => $errorOutput], 500);
+            new ResponseService(false, "xxx", $errorOutput, 500);
         }
     }
 
@@ -69,10 +78,10 @@ class KickService
         if ($result->successful()) {
             new EventService("event", "kick:set-category", "test", ["category" => $game]);
             $output = json_decode($result->output(), true);
-            return response()->json($output, 200, [], JSON_PRETTY_PRINT);
+            new ResponseService(true, "xxx", $output, 200);
         } else {
             $errorOutput = $result->errorOutput();
-            return response()->json(['error' => 'Unban failed', 'details' => $errorOutput], 500);
+            new ResponseService(false, "xxx", $errorOutput, 500);
         }
     }
 
@@ -93,10 +102,10 @@ class KickService
 
         if ($result->successful()) {
             new EventService("event", "kick:clear-chat", "test", []);
-            return json_decode($result->output(), true);
+            new ResponseService(true, "xxx", $output, 200);
         } else {
             $errorOutput = $result->errorOutput();
-            return response()->json(['error' => 'Unban failed', 'details' => $errorOutput], 500);
+            new ResponseService(false, "xxx", $errorOutput, 500);
         }
     }
 
@@ -119,10 +128,10 @@ class KickService
         if ($result->successful()) {
             new EventService("event", "kick:permban", "test", ["user" => $user]);
             $output = json_decode($result->output(), true);
-            return response()->json($output, 200, [], JSON_PRETTY_PRINT);
+            new ResponseService(true, "xxx", $output, 200);
         } else {
             $errorOutput = $result->errorOutput();
-            return response()->json(['error' => 'Unban failed', 'details' => $errorOutput], 500);
+            new ResponseService(false, "xxx", $errorOutput, 500);
         }
     }
 
@@ -146,10 +155,10 @@ class KickService
         if ($result->successful()) {
             new EventService("event", "kick:tempban", "test", ["user" => $user, "duration" => $duration]);
             $output = json_decode($result->output(), true);
-            return response()->json($output, 200, [], JSON_PRETTY_PRINT);
+            new ResponseService(true, "xxx", $output, 200);
         } else {
             $errorOutput = $result->errorOutput();
-            return response()->json(['error' => 'Unban failed', 'details' => $errorOutput], 500);
+            new ResponseService(false, "xxx", $errorOutput, 500);
         }
     }
 
@@ -167,10 +176,10 @@ class KickService
         if ($result->successful()) {
             new EventService("event", "kick:unban", "test", ["user" => $user]);
             $output = json_decode($result->output(), true);
-            return response()->json($output, 200, [], JSON_PRETTY_PRINT);
+            new ResponseService(true, "xxx", $output, 200);
         } else {
             $errorOutput = $result->errorOutput();
-            return response()->json(['error' => 'Unban failed', 'details' => $errorOutput], 500);
+            new ResponseService(false, "xxx", $errorOutput, 500);
         }
     }
 
@@ -188,10 +197,10 @@ class KickService
         if ($result->successful()) {
             new EventService("event", "kick:delete-message", "test", ["messageId" => $messageId]);
             $output = json_decode($result->output(), true);
-            return response()->json($output, 200, [], JSON_PRETTY_PRINT);
+            new ResponseService(true, "xxx", $output, 200);
         } else {
             $errorOutput = $result->errorOutput();
-            return response()->json(['error' => 'Unban failed', 'details' => $errorOutput], 500);
+            new ResponseService(false, "xxx", $errorOutput, 500);
         }
     }
 
@@ -214,10 +223,10 @@ class KickService
     
         if ($result->successful()) {
             $output = json_decode($result->output(), true);
-            return response()->json($output, 200, [], JSON_PRETTY_PRINT);
+            new ResponseService(true, "xxx", $output, 200);
         } else {
             $errorOutput = $result->errorOutput();
-            return response()->json(['error' => 'Unban failed', 'details' => $errorOutput], 500);
+            new ResponseService(false, "xxx", $errorOutput, 500);
         }
     }
 

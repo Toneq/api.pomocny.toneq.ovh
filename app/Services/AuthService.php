@@ -2,18 +2,24 @@
 
 namespace App\Services;
 
-use Illuminate\Support\Facades\Auth;
-use Tymon\JWTAuth\Facades\JWTAuth;
-use App\Models\User;
 use Validator;
+
+//services section
+use App\Services\ResponseService;
+
+//models section
+use App\Models\User;
+
+//jwt section
 use Tymon\JWTAuth\Exceptions\JWTException;
+use Tymon\JWTAuth\Facades\JWTAuth;
 
 class AuthService
 {
     public function login($request){        
         $validator = Validator::make($request->all(), [
             'login' => 'required|string',
-            'password' => 'required|string|min:6',
+            'password' => 'required|string|min:8',
         ]);
 
         if ($validator->fails()) {
@@ -39,15 +45,14 @@ class AuthService
         ]];
         
         $token = JWTAuth::customClaims($customClaims)->fromSubject($user);
-        $refreshToken = JWTAuth::setToken($token)->refresh();
-        return $this->createNewToken($token, $refreshToken);
+        new ResponseService(true, "Pomyślnie zalogowano do aplikacji!", $this->tokenResponse($token), 200);
     }
 
     public function register($request){
         $validator = Validator::make($request->all(), [
             'name' => 'required|string|between:2,100|unique:users',
             'email' => 'required|string|email|max:100|unique:users',
-            'password' => 'required|string|confirmed|min:6',
+            'password' => 'required|string|confirmed|min:8',
         ]);
         if($validator->fails()){
             return response()->json($validator->errors(), 400);
@@ -56,59 +61,53 @@ class AuthService
                     $validator->validated(),
                     ['password' => bcrypt($request->password)]
                 ));
-        return response()->json([
-            'message' => 'User successfully registered'
-            // 'user' => $user
-        ], 201);
+
+        new ResponseService(true, "Udało się zarejestrować", [], 201);
     }
 
     public function logout($request){
         $token = $request->bearerToken(); // Pobierz token z nagłówka Authorization
 
         if (!$token) {
-            return response()->json(['error' => 'Token not provided'], 401);
+            new ResponseService(false, "Token not provided", [], 401);
         }
-    
         try {
             JWTAuth::setToken($token)->invalidate();
         } catch (\Tymon\JWTAuth\Exceptions\TokenInvalidException $e) {
-            return response()->json(['error' => 'Invalid token'], 401);
+            new ResponseService(false, "Invalid token", [], 401);
         } catch (\Tymon\JWTAuth\Exceptions\JWTException $e) {
-            return response()->json(['error' => 'Could not invalidate token'], 500);
+            new ResponseService(false, "Could not invalidate token", [], 500);
         }
     
-        return response()->json(['message' => 'User successfully signed out']);
+        new ResponseService(true, "User successfully signed out", [], 200);
     }
 
     public function refresh(){
         try {
             $token = JWTAuth::parseToken()->refresh();
         } catch (\Tymon\JWTAuth\Exceptions\TokenInvalidException $e) {
-            return response()->json(['error' => 'Token is invalid'], 401);
+            new ResponseService(false, "Token is invalid", [], 401);
         } catch (\Tymon\JWTAuth\Exceptions\TokenExpiredException $e) {
-            return response()->json(['error' => 'Token has expired'], 401);
+            new ResponseService(false, "Token has expired", [], 401);
         } catch (\Tymon\JWTAuth\Exceptions\JWTException $e) {
-            return response()->json(['error' => 'Could not refresh token'], 500);
+            new ResponseService(false, "Could not refresh token", [], 500);
         }
 
-        $refreshToken = JWTAuth::setToken($token)->refresh();
-        return $this->createNewToken($token, $refreshToken);
+        new ResponseService(true, "Token został zaktualizowany", $this->tokenResponse($token), 200);
     }
 
     public function userProfile(){
         try {
             $user = JWTAuth::parseToken()->authenticate();
-
-            return response()->json(['user' => $user]);
+            new ResponseService(true, "Token został zaktualizowany", $user, 200);
         } catch (JWTException $e) {
-            return response()->json(['error' => 'Unauthorized'], 401);
+            new ResponseService(false, "Unauthorized", [], 401);
         }
     }
 
-    protected function createNewToken($access, $refresh){
+    protected function tokenResponse($access){
         return response()->json([
             'access_token' => $access,
-            'refresh_token' => $refresh,
             'token_type' => 'bearer',
             'expires_in' => JWTAuth::factory()->getTTL()
         ]);

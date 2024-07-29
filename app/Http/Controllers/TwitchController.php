@@ -2,16 +2,22 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Http;
-use Laravel\Socialite\Facades\Socialite;
-use App\Services\TwitchService;
+//models section
 use App\Models\StreamProvider;
 use App\Models\AccessToken;
+
+//services section
+use App\Services\TwitchService;
+
+//Illuminate section
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Session;
+
+//jwt section
 use Tymon\JWTAuth\Facades\JWTAuth;
-use Validator;
-use Tymon\JWTAuth\Exceptions\JWTException;
+
+//others section
+use Laravel\Socialite\Facades\Socialite;
 
 class TwitchController extends Controller
 {
@@ -65,7 +71,7 @@ class TwitchController extends Controller
         
         if(!$twitchUser){
             $data = [
-                "success" => false,
+                "status" => false,
                 "message" => "Brak autoryzacji z twitch!",
                 "data" => []
             ];
@@ -74,7 +80,7 @@ class TwitchController extends Controller
 
         if(!$appUser){
             $data = [
-                "success" => false,
+                "status" => false,
                 "message" => "Brak autoryzacji z aplikacji!",
                 "data" => []
             ];
@@ -91,7 +97,7 @@ class TwitchController extends Controller
 
         if($isProvider) {
             $data = [
-                "success" => false,
+                "status" => false,
                 "message" => "To konto jest już przypisane do innego konta",
                 "data" => [
                     "pageToken" => $token,
@@ -106,7 +112,7 @@ class TwitchController extends Controller
 
         if($isConnected) {
             $data = [
-                "success" => false,
+                "status" => false,
                 "message" => "Użytkownik ma już przypisane konto TWITCH",
                 "data" => [
                     "pageToken" => $token,
@@ -126,7 +132,7 @@ class TwitchController extends Controller
         AccessToken::updateOrCreateToken($twitchRefreshToken, 'twitch', 'refresh', $appUser->id);
 
         $data = [
-            "success" => true,
+            "status" => true,
             "message" => "Konto zostało połączone",
             "data" => []
         ];

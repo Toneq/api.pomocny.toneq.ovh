@@ -2,15 +2,23 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-use App\Services\KickService;
+//models section
 use App\Models\StreamProvider;
 use App\Models\KickVerifyCode;
-use App\Models\AccessToken;
-use Illuminate\Support\Facades\Session;
-use Tymon\JWTAuth\Facades\JWTAuth;
-use Ramsey\Uuid\Uuid;
+
+//services section
+use App\Services\KickService;
 use App\Services\KickVerifyService;
+use App\Services\ResponseService;
+
+//Illuminate section
+use Illuminate\Http\Request;
+
+//jwt section
+use Tymon\JWTAuth\Facades\JWTAuth;
+
+//others section
+use Ramsey\Uuid\Uuid;
 
 class KickController extends Controller
 {
@@ -26,7 +34,7 @@ class KickController extends Controller
         $appUser = JWTAuth::parseToken()->authenticate();
 
         if(!$appUser){
-            return response()->json(['success' => false, 'message' => "Brak autoryzacji z aplikacji!", 'data' => []], 403);
+            new ResponseService(false, "Brak autoryzacji z aplikacji!", [], 403);
         }
 
         $uuid = Uuid::uuid4();
@@ -37,7 +45,7 @@ class KickController extends Controller
             'code' =>  $uuid->toString(),
         ]);
 
-        return response()->json(['success' => true, 'message' => "Kod weryfikacyjny został wygenerowany!", 'data' => ['code' => $uuid->toString()]], 200);
+        new ResponseService(true, "Kod weryfikacyjny został wygenerowany!", ['code' => $uuid->toString()], 200);
     }
 
     public function verifyCode(Request $request){
@@ -51,7 +59,7 @@ class KickController extends Controller
     public function verify(Request $request){
         $appUser = JWTAuth::parseToken()->authenticate();
         if(!$appUser){
-            return response()->json(['success' => false, 'message' => "Brak autoryzacji z aplikacji!", 'data' => []], 403);
+            new ResponseService(false, "Brak autoryzacji z aplikacji!", [], 403);
         }
 
         $providerId = $request->input("id");
@@ -61,7 +69,7 @@ class KickController extends Controller
                                     ->first();
 
         if($isProvider) {
-            return response()->json(['success' => false, 'message' => "To konto jest już przypisane do innego konta", 'data' => []], 401);
+            new ResponseService(false, "To konto jest już przypisane do innego konta", [], 401);
         }
 
         $isConnected = StreamProvider::where('user_id', $appUser->id)
@@ -69,7 +77,7 @@ class KickController extends Controller
                                     ->first();
 
         if($isConnected) {
-            return response()->json(['success' => false, 'message' => "Użytkownik ma już przypisane konto KICK", 'data' => []], 401);
+            new ResponseService(false, "Użytkownik ma już przypisane konto KICK", [], 401);
         }
 
         StreamProvider::create([
@@ -79,6 +87,6 @@ class KickController extends Controller
             'active' => 1
         ]);
 
-        return response()->json(['success' => true, 'message' => "Konto zostało połączone", 'data' => []], 200);
+        new ResponseService(true, "Konto zostało połączone", [], 200);
     }
 }

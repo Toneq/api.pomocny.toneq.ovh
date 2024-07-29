@@ -2,8 +2,13 @@
 
 namespace App\Services;
 
-use Illuminate\Support\Facades\Auth;
+//models section
 use App\Models\StreamProvider;
+
+//services section
+use App\Services\ResponseService;
+
+//jwt section
 use Tymon\JWTAuth\Facades\JWTAuth;
 use Tymon\JWTAuth\Exceptions\JWTException;
 
@@ -14,10 +19,9 @@ class StreamProviderService
             $user = JWTAuth::parseToken()->authenticate();
             $providers = StreamProvider::where('user_id', $user->id)->get();
             $services = $providers->pluck('service');
-            
-            return response()->json($services);
+            new ResponseService(true, "Udało sie pobrać zintegrowane platformy", $services, 200);
         } catch (JWTException $e) {
-            return response()->json(['error' => 'Unauthorized'], 401);
+            new ResponseService(false, "Unauthorized", [], 401);
         }
     }
 }
