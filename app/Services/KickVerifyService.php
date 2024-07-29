@@ -25,9 +25,9 @@ class KickVerifyService
             Redis::publish('verify:' . $code, json_encode($json));
             new ResponseService(true, "Udało się wysłać powiadomienie", [], 200);
         } catch (ConnectionException $e) {
-            new ResponseService(false, 'Redis connection error: ' . $e->getMessage(), [], 500);
+            new ResponseService(false, 'Błąd połączenia Redis: ' . $e->getMessage(), [], 500);
         } catch (\Exception $e) {
-            new ResponseService(false, 'An error occurred: ' . $e->getMessage(), [], 500);
+            new ResponseService(false, 'Wystąpił błąd: ' . $e->getMessage(), [], 500);
         }
     }
 }

@@ -52,10 +52,10 @@ class KickService
         if ($result->successful()) {
             new EventService("event", "kick:set-title", "test", ["title" => $title]);
             $output = json_decode($result->output(), true);
-            new ResponseService(true, "xxx", $output, 200);
+            new ResponseService(true, "Tytuł został pomyślnie zmieniony", $output, 200);
         } else {
             $errorOutput = $result->errorOutput();
-            new ResponseService(false, "xxx", $errorOutput, 500);
+            new ResponseService(false, "Tytuł nie został pomyślnie zmieniony", $errorOutput, 500);
         }
     }
 
@@ -78,10 +78,10 @@ class KickService
         if ($result->successful()) {
             new EventService("event", "kick:set-category", "test", ["category" => $game]);
             $output = json_decode($result->output(), true);
-            new ResponseService(true, "xxx", $output, 200);
+            new ResponseService(true, "Kategoria została pomyślnie zmieniona", $output, 200);
         } else {
             $errorOutput = $result->errorOutput();
-            new ResponseService(false, "xxx", $errorOutput, 500);
+            new ResponseService(false, "Kategoria nie została pomyślnie zmieniona", $errorOutput, 500);
         }
     }
 
@@ -102,10 +102,10 @@ class KickService
 
         if ($result->successful()) {
             new EventService("event", "kick:clear-chat", "test", []);
-            new ResponseService(true, "xxx", $output, 200);
+            new ResponseService(true, "Czat został wyczyszczony", $result, 200);
         } else {
             $errorOutput = $result->errorOutput();
-            new ResponseService(false, "xxx", $errorOutput, 500);
+            new ResponseService(false, "Czat nie został wyczyszczony", $errorOutput, 500);
         }
     }
 
@@ -128,10 +128,10 @@ class KickService
         if ($result->successful()) {
             new EventService("event", "kick:permban", "test", ["user" => $user]);
             $output = json_decode($result->output(), true);
-            new ResponseService(true, "xxx", $output, 200);
+            new ResponseService(true, "Permban został pomyślnie nadany", $output, 200);
         } else {
             $errorOutput = $result->errorOutput();
-            new ResponseService(false, "xxx", $errorOutput, 500);
+            new ResponseService(false, "Permban nie został pomyślnie nadany", $errorOutput, 500);
         }
     }
 
@@ -155,10 +155,10 @@ class KickService
         if ($result->successful()) {
             new EventService("event", "kick:tempban", "test", ["user" => $user, "duration" => $duration]);
             $output = json_decode($result->output(), true);
-            new ResponseService(true, "xxx", $output, 200);
+            new ResponseService(true, "Tymczasowe wykluczenie zostało pomyślnie nadane", $output, 200);
         } else {
             $errorOutput = $result->errorOutput();
-            new ResponseService(false, "xxx", $errorOutput, 500);
+            new ResponseService(false, "Tymczasowe wykluczenie nie zostało pomyślnie nadane", $errorOutput, 500);
         }
     }
 
@@ -176,10 +176,10 @@ class KickService
         if ($result->successful()) {
             new EventService("event", "kick:unban", "test", ["user" => $user]);
             $output = json_decode($result->output(), true);
-            new ResponseService(true, "xxx", $output, 200);
+            new ResponseService(true, "Unban został pomyślnie nadany", $output, 200);
         } else {
             $errorOutput = $result->errorOutput();
-            new ResponseService(false, "xxx", $errorOutput, 500);
+            new ResponseService(false, "Unban nie został pomyślnie nadany", $errorOutput, 500);
         }
     }
 
@@ -197,10 +197,10 @@ class KickService
         if ($result->successful()) {
             new EventService("event", "kick:delete-message", "test", ["messageId" => $messageId]);
             $output = json_decode($result->output(), true);
-            new ResponseService(true, "xxx", $output, 200);
+            new ResponseService(true, "Wiadomość została pomyślnie usunięta", $output, 200);
         } else {
             $errorOutput = $result->errorOutput();
-            new ResponseService(false, "xxx", $errorOutput, 500);
+            new ResponseService(false, "Wiadomość nie została pomyślnie usunięta", $errorOutput, 500);
         }
     }
 
@@ -223,10 +223,10 @@ class KickService
     
         if ($result->successful()) {
             $output = json_decode($result->output(), true);
-            new ResponseService(true, "xxx", $output, 200);
+            new ResponseService(true, "Wiadomość została pomyślnie wysłana", $output, 200);
         } else {
             $errorOutput = $result->errorOutput();
-            new ResponseService(false, "xxx", $errorOutput, 500);
+            new ResponseService(false, "Wiadomość nie została pomyślnie wysłana", $errorOutput, 500);
         }
     }
 

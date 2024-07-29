@@ -21,7 +21,7 @@ class StreamProviderService
             $services = $providers->pluck('service');
             new ResponseService(true, "Udało sie pobrać zintegrowane platformy", $services, 200);
         } catch (JWTException $e) {
-            new ResponseService(false, "Unauthorized", [], 401);
+            new ResponseService(false, "Nieautoryzowany", [], 401);
         }
     }
 }

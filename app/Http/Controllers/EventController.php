@@ -11,8 +11,6 @@ use App\Services\ResponseService;
 
 class EventController extends Controller
 {
-
-
     protected $request;
 
     public function __construct(Request $request)
