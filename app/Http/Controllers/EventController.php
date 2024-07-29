@@ -12,20 +12,22 @@ use App\Services\ResponseService;
 class EventController extends Controller
 {
     protected $request;
+    protected $responseService;
 
-    public function __construct(Request $request)
+    public function __construct(Request $request, ResponseService $responseService)
     {
         $type = $request->input("type");
         $event = $request->input("event");
         $channelName = $request->input("channel");
         $data = $request->input("data");
+        $this->responseService = $responseService;
 
         new EventService($type, $event, $channelName, $data);
     }
 
     public function __invoke(Request $request)
     {
-        new ResponseService(true, "xxx", [], 200);
+        return $this->responseService->response(true, "xxx", [], 200);
     }
     // protected $eventService;
 

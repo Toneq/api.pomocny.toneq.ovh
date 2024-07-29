@@ -14,14 +14,21 @@ use Tymon\JWTAuth\Exceptions\JWTException;
 
 class StreamProviderService
 {
+    protected $responseService;
+
+    public function __construct(ResponseService $responseService)
+    {
+        $this->responseService = $responseService;
+    }
+
     public function getAccontProviders($request){
         try {
             $user = JWTAuth::parseToken()->authenticate();
             $providers = StreamProvider::where('user_id', $user->id)->get();
             $services = $providers->pluck('service');
-            new ResponseService(true, "Udało sie pobrać zintegrowane platformy", $services, 200);
+            return $this->responseService->response(true, "Udało sie pobrać zintegrowane platformy", $services, 200);
         } catch (JWTException $e) {
-            new ResponseService(false, "Nieautoryzowany", [], 401);
+            return $this->responseService->response(false, "Nieautoryzowany", [], 401);
         }
     }
 }

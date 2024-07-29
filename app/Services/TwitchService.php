@@ -19,13 +19,15 @@ class TwitchService
     protected $clientSecret;
     protected $accessTokenBot;
     protected $accessTokenBroadcaster;
+    protected $responseService;
 
-    public function __construct()
+    public function __construct(ResponseService $responseService)
     {
         $this->clientId = env('TWITCH_CLIENT_ID');
         $this->clientSecret = env('TWITCH_CLIENT_SECRET');
         $this->accessTokenBot = $this->getAccessToken("bot");
         $this->accessTokenBroadcaster = $this->getAccessToken("broadcaster");
+        $this->responseService = $responseService;
     }
 
     public function setTitle($title)
@@ -39,7 +41,7 @@ class TwitchService
             'title' => $title,
         ]);
         new EventService("event", "twitch:set-title", "test", ["title" => $title]);
-        new ResponseService(true, "Tytuł został pomyślnie zmieniony", $response, 200);
+        return $this->responseService->response(true, "Tytuł został pomyślnie zmieniony", $response, 200);
     }
 
     public function setCategory($game)
@@ -53,7 +55,7 @@ class TwitchService
             'game_id' => $game,
         ]);
         new EventService("event", "twitch:set-category", "test", ["category" => $game]);
-        new ResponseService(true, "Kategoria została pomyślnie zmieniona", $response, 200);
+        return $this->responseService->response(true, "Kategoria została pomyślnie zmieniona", $response, 200);
     }
 
     public function clearChat()
@@ -67,7 +69,7 @@ class TwitchService
             'moderator_id' => '896529196'
         ]);
         new EventService("event", "twitch:clear-chat", "test", []);
-        new ResponseService(true, "Czat został wyczyszczony", $response, 200);
+        return $this->responseService->response(true, "Czat został wyczyszczony", $response, 200);
     }
 
     public function permBan($user)
@@ -85,7 +87,7 @@ class TwitchService
             ]
         ]);
         new EventService("event", "twitch:permban", "test", ["user" => $user]);
-        new ResponseService(true, "Permban został pomyślnie nadany", $response, 200);
+        return $this->responseService->response(true, "Permban został pomyślnie nadany", $response, 200);
     }
 
     public function tempBan($user, $duration)
@@ -104,7 +106,7 @@ class TwitchService
             ]
         ]);
         new EventService("event", "twitch:tempban", "test", ["user" => $user, "duration" => $duration]);
-        new ResponseService(true, "Tymczasowe wykluczenie zostało pomyślnie nadane", $response, 200);
+        return $this->responseService->response(true, "Tymczasowe wykluczenie zostało pomyślnie nadane", $response, 200);
     }
 
     public function unban($user)
@@ -119,7 +121,7 @@ class TwitchService
             'user_id' => $user
         ]);
         new EventService("event", "twitch:unban", "test", ["user" => $user]);
-        new ResponseService(true, "Unban został pomyślnie nadany", $response, 200);
+        return $this->responseService->response(true, "Unban został pomyślnie nadany", $response, 200);
     }
 
     public function deleteMessage($messageId)
@@ -134,7 +136,7 @@ class TwitchService
             'message_id' => $messageId
         ]);
         new EventService("event", "twitch:delete-message", "test", ["messageId" => $messageId]);
-        new ResponseService(true, "Wiadomość została pomyślnie usunięta", $response, 200);
+        return $this->responseService->response(true, "Wiadomość została pomyślnie usunięta", $response, 200);
     }
 
     public function sendMessage($message)
@@ -149,7 +151,7 @@ class TwitchService
             'message' => $message
         ]);
 
-        new ResponseService(true, "Wiadomość została pomyślnie wysłana", $response, 200);
+        return $this->responseService->response(true, "Wiadomość została pomyślnie wysłana", $response, 200);
     }
 
     public function sendAnnouncement($message, $color)
@@ -165,7 +167,7 @@ class TwitchService
             'color' => $color
         ]);
 
-        new ResponseService(true, "Powiadomienie zostało pomyślnie wysłane", $response, 200);
+        return $this->responseService->response(true, "Powiadomienie zostało pomyślnie wysłane", $response, 200);
     }
 
     // public function createAccessToken()
